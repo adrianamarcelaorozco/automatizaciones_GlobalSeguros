@@ -1,3 +1,4 @@
+import time 
 from pages.login_page import LoginPage
 
 def test_login_exitoso(driver):
@@ -5,3 +6,4 @@ def test_login_exitoso(driver):
     login.open()
     login.login_workflow("NCRUZV", "Clave123")
     
+    time.sleep(5)
