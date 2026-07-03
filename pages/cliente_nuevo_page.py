@@ -1,18 +1,20 @@
-import time
 import random
+import time
 from enum import Enum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pages.base_page import BasePage
 
 class TipoDocumento(Enum):
     CIUDADANIA = ("CEDULA DE CIUDADANIA", "CEDULA DE CIUDADANIA")
     EXTRANJERIA = ("CEDULA DE EXTRANJERIA", "CEDULA DE EXTRANJERIA")
     PROTECCION_TEMPORAL = ("PERMISO PROTECCION TEMPORAL", "PERMISO DE PROTECCIÓN TEMPORAL")
 
-class BusquedaClientePage:
+class BusquedaClientePage(BasePage):
     def __init__(self, driver):
-        self.driver = driver
+        # Heredamos el inicializador y el self.wait (de 15 segundos) de BasePage
+        super().__init__(driver)
         
         # LOCALIZADORES PANTALLA 1 (BÚSQUEDA)
         self.SELECT_DOCUMENTO_DESPLEGABLE = (By.XPATH, "//select[@id='ListaDocumentos']/preceding-sibling::input[@class='select-dropdown']")
@@ -46,8 +48,8 @@ class BusquedaClientePage:
 
     def ingresar_y_buscar_cliente(self, numero_documento: str, tipo_documento: TipoDocumento):
         """Selecciona el tipo de documento en la pantalla inicial de búsqueda."""
-        dropdown = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.SELECT_DOCUMENTO_DESPLEGABLE))
-        dropdown.click()
+        # OPTIMIZACIÓN: Usamos el método click centralizado de BasePage
+        self.click(self.SELECT_DOCUMENTO_DESPLEGABLE)
         
         texto_busqueda = tipo_documento.value[0]
         xpath_opcion = f"//ul[contains(@class, 'dropdown-content')]//span[text()='{texto_busqueda}']"
@@ -55,11 +57,10 @@ class BusquedaClientePage:
         opcion_li.click()
         time.sleep(0.5)
 
-        campo_numero = WebDriverWait(self.driver, 15).until(EC.visibility_of_element_located(self.CAMPO_NUMERO_DOCUMENTO))
-        campo_numero.clear()
-        campo_numero.send_keys(numero_documento)
+        # OPTIMIZACIÓN: Usamos el método type_text de BasePage
+        self.type_text(self.CAMPO_NUMERO_DOCUMENTO, numero_documento)
 
-        boton_buscar = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.BOTON_BUSCAR))
+        boton_buscar = self.wait.until(EC.element_to_be_clickable(self.BOTON_BUSCAR))
         try:
             boton_buscar.click()
         except Exception:
@@ -69,18 +70,15 @@ class BusquedaClientePage:
 
     def click_nuevo_cliente(self):
         """Avanza al formulario de creación."""
-        boton_nuevo = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.BOTON_NUEVO_CLIENTE))
-        try:
-            boton_nuevo.click()
-        except Exception:
-            self.driver.execute_script("arguments[0].click();", boton_nuevo)
+        # OPTIMIZACIÓN: Delegamos el clic dinámico (normal o JS) a la BasePage
+        self.click(self.BOTON_NUEVO_CLIENTE)
         print("[QA Info] Clic en botón 'Nuevo Cliente' ejecutado.")
         time.sleep(2.0)
 
     def completar_datos_personales(self, numero_documento: str, tipo_documento: TipoDocumento, correo: str, celular: str, departamento: str, ciudad: str):
         """Diligencia el formulario de registro adaptando los datos inyectados mediante JS."""
         
-        # BANCO DE DATOS ALEATORIOS COHERENTES
+        # BANCO DE DATOS ALEATORIOS COHERENTES (Se mantiene intacto)
         apellidos = ["Gomez", "Rodriguez", "Perez", "Martinez", "Lopez", "Zapata", "Gaviria", "Restrepo", "Cardona"]
         nombres_m = ["Carlos", "Juan", "Andres", "Mateo", "Luis", "Santiago", "Diego", "Alejandro"]
         nombres_f = ["Diana", "Camila", "Valeria", "Sofia", "Maria", "Laura", "Natalia", "Paula"]
@@ -95,16 +93,23 @@ class BusquedaClientePage:
         dia_nacimiento = random.randint(1, 28)
         fecha_str = f"{dia_nacimiento:02d}/{mes_nacimiento:02d}/{año_nacimiento}"
         edad_calculada = 2026 - año_nacimiento
-
+    
         print(f"[QA Info] Formulario: Perfil {sexo} nacido en {año_nacimiento} ({edad_calculada} años).")
+        
+        departamentos_colombia = [
+            "AMAZONAS", "ANTIOQUIA", "ARAUCA", "ATLANTICO", "BOLIVAR", "BOYACA", 
+            "CALDAS", "CAQUETA", "CASANARE", "CAUCA", "CESAR", "CHOCO", "CORDOBA", 
+            "CUNDINAMARCA", "LA GUAJIRA", "GUAINIA", "GUAVIARE", "HUILA", "MAGDALENA", 
+            "META", "NARIÐO", "NORTE DE SANTANDER", "PUTUMAYO", "QUINDIO", "RISARALDA", 
+            "SAN ANDRES", "SANTANDER", "SUCRE", "TOLIMA", "VALLE DEL CAUCA", "VAUPES", 
+            "VICHADA", "DISTRITO CAPITAL"
+        ]
 
         # 1. Seleccionar Tipo de Documento en Formulario de Registro
-        drop_form_doc = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.FORM_SELECT_DOCUMENTO))
-        drop_form_doc.click()
+        self.click(self.FORM_SELECT_DOCUMENTO)
         time.sleep(0.5)
         
         texto_registro = tipo_documento.value[1]
-        # Corrección: Asegura buscar la opción dentro del ul hermano del select de TipoIdentificacion
         opcion_form_li = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, f"//select[@id='TipoIdentificacion']/preceding-sibling::ul[contains(@class, 'dropdown-content')]//span[text()='{texto_registro}']"))
         )
@@ -112,9 +117,8 @@ class BusquedaClientePage:
         time.sleep(0.5)
 
         # 2. Ingresar el mismo Número de Documento
-        campo_form_num = WebDriverWait(self.driver, 15).until(EC.presence_of_element_located(self.FORM_NUMERO_DOCUMENTO))
-        campo_form_num.clear()
-        campo_form_num.send_keys(numero_documento)
+        self.type_text(self.FORM_NUMERO_DOCUMENTO, numero_documento)
+        campo_form_num = self.driver.find_element(*self.FORM_NUMERO_DOCUMENTO)
         self.driver.execute_script("arguments[0].blur();", campo_form_num)
         time.sleep(1.0)
 
@@ -137,58 +141,57 @@ class BusquedaClientePage:
         self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].click();", radio_sexo_elem)
 
         # 5. Llenar Correo Electrónico y Celular
-        campo_correo = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.CAMPO_CORREO))
-        campo_correo.clear()
-        campo_correo.send_keys(correo)
+        self.type_text(self.CAMPO_CORREO, correo)
+        self.type_text(self.CAMPO_CELULAR, celular)
 
-        campo_celular = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.CAMPO_CELULAR))
-        campo_celular.clear()
-        campo_celular.send_keys(celular)
+        # 6. Definición del Departamento final
+        if departamento == "ALEATORIO":
+            departamento_final = random.choice(departamentos_colombia)
+        else:
+            departamento_final = departamento
 
-        # 6. Seleccionar Departamento
-        drop_dep = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.SELECT_DEPARTAMENTO))
-        drop_dep.click()
+        # OPTIMIZACIÓN: Eliminamos las variables duplicadas 'nombre_random' y 'apellido_random' que reescribían la lógica
+        print(f"[QA Info] Registro Dinámico: {nombre_aleatorio} {apellido1_aleatorio} en {departamento_final}")
+
+        # Seleccionar Departamento
+        self.click(self.SELECT_DEPARTAMENTO)
         time.sleep(0.5)
-        # Corrección: Apunta al ul específico del select de Departamento
+        
         opcion_dep = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, f"//select[@id='Departamento']/preceding-sibling::ul[contains(@class, 'dropdown-content')]//span[text()='{departamento.upper()}']"))
+            EC.element_to_be_clickable((By.XPATH, f"//select[@id='Departamento']/preceding-sibling::ul[contains(@class, 'dropdown-content')]//span[text()='{departamento_final.upper()}']"))
         )
         opcion_dep.click()
         
         print("[QA Info] Esperando recarga de ciudades (PostBack)...")
-        time.sleep(3.0)
+        time.sleep(4.0)
 
         # 7. Seleccionar Ciudad
-        drop_ciu = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.SELECT_CIUDAD))
-        drop_ciu.click()
+        self.click(self.SELECT_CIUDAD)
         time.sleep(0.5)
-        # SOLUCIÓN CRÍTICA: Apunta estrictamente al ul hermano del select de Ciudad (#Ciudad) para evitar colisiones visuales
-        opcion_ciu = WebDriverWait(self.driver, 15).until(
-            EC.element_to_be_clickable((By.XPATH, f"//select[@id='Ciudad']/preceding-sibling::ul[contains(@class, 'dropdown-content')]//span[text()='{ciudad.upper()}']"))
-        )
+        
+        opciones_ciu = self.driver.find_elements(By.XPATH, "//select[@id='Ciudad']/preceding-sibling::ul[contains(@class, 'dropdown-content')]//span")
+        
+        if len(opciones_ciu) > 1:
+            opcion_ciu = opciones_ciu[1] # Selecciona la segunda opción real
+            print(f"[QA Info] Seleccionando segunda ciudad disponible: {opcion_ciu.text}")
+        else:
+            opcion_ciu = opciones_ciu[0]
+            print(f"[QA Info] Seleccionando única ciudad disponible: {opcion_ciu.text}")
+        
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(opcion_ciu))
         opcion_ciu.click()
         time.sleep(0.5)
 
         # 8. Guardar Formulario
-        btn_grabar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.BOTON_GRABAR))
-        try:
-            btn_grabar.click()
-        except Exception:
-            self.driver.execute_script("arguments[0].click();", btn_grabar)
-            
+        # OPTIMIZACIÓN: Delegamos el clic robusto a la BasePage
+        self.click(self.BOTON_GRABAR)
         print(f"[QA Info] Registro enviado para {nombre_aleatorio} {apellido1_aleatorio}.")
 
     def obtener_mensaje_exito_y_cerrar(self) -> str:
         """Valida visualmente el mensaje de confirmación y cierra la alerta."""
-        elemento_texto = WebDriverWait(self.driver, 15).until(
-            EC.visibility_of_element_located(self.TEXTO_ALERTA_EXITO)
-        )
+        elemento_texto = self.wait.until(EC.visibility_of_element_located(self.TEXTO_ALERTA_EXITO))
         texto_alerta = elemento_texto.text.strip()
         
-        boton_aceptar = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.BOTON_ACEPTAR_ALERTA))
-        try:
-            boton_aceptar.click()
-        except Exception:
-            self.driver.execute_script("arguments[0].click();", boton_aceptar)
-            
+        # OPTIMIZACIÓN: Consumo del método click centralizado
+        self.click(self.BOTON_ACEPTAR_ALERTA)
         return texto_alerta

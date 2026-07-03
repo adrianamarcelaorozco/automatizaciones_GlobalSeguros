@@ -9,18 +9,17 @@ class LoginPage(BasePage):
 
     URL = "http://10.1.2.33/PortalEM/ingreso-usuarios.aspx"
 
-    # Locators (Cambiamos a ID que es más rápido y seguro que el XPATH)
+    # Locators (IDs limpios, rápidos y estables)
     BTN_CANCELAR = (By.ID, "btnCancelar")
     INPUT_USUARIO = (By.ID, "usuarioLogin")
     INPUT_PASSWORD = (By.ID, "claveLogin")
     BTN_INGRESAR = (By.ID, "btnLogin")
     BTN_MIS_COTIZACIONES = (By.XPATH, "//*[contains(@id, 'btnMisCotizaciones') or contains(@id, 'IrCotizadores')]")    
-    # Selector del fondo gris para asegurar que desaparezca antes de continuar
-    FONDO_MODAL = (By.ID, "mpeMensajeNoCliente_backgroundElement")
+    MODAL_INICIAL = (By.ID, "mpeMensajeNoCliente_backgroundElement")
+    BTN_ADICION_SEMESTRE = (By.XPATH, "//*[contains(@id, 'IrAdicionSemestres') or contains(@id, 'btnAdicionSemestre')]")
 
     def open(self):
         self.driver.get(self.URL)
-        # Manejamos el modal de forma segura aquí
         self.cerrar_modal_si_aparece()
 
     def enter_username(self, username):
@@ -30,8 +29,9 @@ class LoginPage(BasePage):
         self.type_text(self.INPUT_PASSWORD, password)
 
     def click_ingresar(self):
-        element = self.wait.until(EC.presence_of_element_located(self.BTN_INGRESAR))
-        self.driver.execute_script("arguments[0].click();", element)
+        # OPTIMIZACIÓN: Delegamos el clic a BasePage. Si por alguna razón el botón
+        # se intercepta visualmente, nuestro BasePage lo resolverá usando JavaScript automáticamente.
+        self.click(self.BTN_INGRESAR)
 
     def click_mis_cotizaciones(self):
         self.click(self.BTN_MIS_COTIZACIONES)
@@ -47,7 +47,7 @@ class LoginPage(BasePage):
         Si no aparece en 3 segundos, continúa con el flujo sin romper el test.
         """
         try:
-            # Espera corta de 3 segundos exclusiva para el modal
+            # Espera corta de 3 segundos exclusiva para verificar el modal
             boton = WebDriverWait(self.driver, 3).until(
                 EC.element_to_be_clickable(self.BTN_CANCELAR)
             )
@@ -56,8 +56,7 @@ class LoginPage(BasePage):
             
             # Esperamos a que el fondo gris desaparezca por completo de la pantalla
             WebDriverWait(self.driver, 3).until(
-                EC.invisibility_of_element_located(self.FONDO_MODAL)
+                EC.invisibility_of_element_located(self.MODAL_INICIAL)
             )
         except TimeoutException:
-            # Si el modal no se presenta (como en tu navegación habitual), el test no falla
             print("\n[QA Info] El modal no apareció. Continuando con el login directo.")
