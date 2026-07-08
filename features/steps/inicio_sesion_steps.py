@@ -3,7 +3,7 @@ from behave import given, when, then
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from pages.login_page import LoginPage
+from pages.inicio_sesion_page import LoginPage
 
 @given('que el analista de QA ha iniciado sesión en el portal')
 def step_impl_login_puro(context):

@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from pages.cliente_nuevo_page import BusquedaClientePage, TipoDocumento
-from pages.login_page import LoginPage
+from pages.inicio_sesion_page import LoginPage
 
 @given('que el analista de QA ha iniciado sesión y navegado a la sección de cotizaciones')
 def step_impl_login_y_navegacion(context):

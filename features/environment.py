@@ -1,31 +1,29 @@
-import os
-import sys
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-# OPTIMIZACIÓN: Simplificamos el cálculo de la raíz del proyecto
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+def before_all(context):
+    """Se ejecuta una vez antes de toda la suite de pruebas."""
+    # Usamos WebDriver Manager para evitar problemas con la versión del chromedriver
+    options = webdriver.ChromeOptions()
+    # options.add_argument("--headless") # Descomenta si quieres ejecutar en segundo plano
+    options.add_argument("--start-maximized")
+    
+    # Inicializamos el driver y lo asignamos al contexto global
+    context.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 def before_scenario(context, scenario):
-    """Inicializa un Chrome completamente limpio antes de CADA escenario."""
-    options = webdriver.ChromeOptions()
-    options.add_argument("--start-maximized")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    
-    # Podrías agregar esta opción si quieres silenciar alertas basura en tu consola:
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    
-    context.driver = webdriver.Chrome(options=options)
+    """Se ejecuta antes de cada escenario individual."""
+    # Navegamos a la URL base antes de empezar cada prueba
+    context.driver.get("http://10.1.2.33/PortalEM/ingreso-usuarios.aspx")
+
+def after_all(context):
+    """Se ejecuta después de toda la suite de pruebas."""
+    # Cerramos el navegador para liberar recursos
+    if hasattr(context, 'driver'):
+        context.driver.quit()
 
 def after_scenario(context, scenario):
-    """Garantiza la destrucción del proceso de Chrome para evitar fugas de memoria."""
-    driver = getattr(context, "driver", None)
-    if driver:
-        try:
-            driver.quit()
-        except Exception:
-            pass
-        finally:
-            # Eliminamos la referencia para asegurar limpieza absoluta en memoria
-            context.driver = None
+    """Opcional: Captura un screenshot si un escenario falla."""
+    if scenario.status == "failed":
+        context.driver.save_screenshot(f"fail_{scenario.name}.png")
