@@ -58,3 +58,11 @@ class BasePage:
         element = self.wait.until(EC.presence_of_element_located(locator))
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         return element
+    
+    def interactuar_con_beneficiario(self, campo_locator, valor):
+        # Scroll hacia el elemento
+        elemento = self.driver.find_element(*campo_locator)
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", elemento)
+        
+        # Esperar visibilidad y enviar datos
+        self.wait.until(EC.element_to_be_clickable(campo_locator)).send_keys(valor)

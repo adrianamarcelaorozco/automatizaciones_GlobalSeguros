@@ -1,0 +1,785 @@
+<html lang="es"><head><style type="text/css" id="alertifyCSS">/* style.css */</style><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"><link rel="icon" type="image/png" href="images/favicon.ico"><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"><link rel="stylesheet" href="libs/Font-Awesome/css/font-awesome.min.css"><link rel="stylesheet" href="libs/materialize/dist/css/materialize.min.css"><link rel="stylesheet" href="libs/alertifyjs/dist/css/alertify.css"><link rel="stylesheet" href="libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css"><link rel="stylesheet" href="libs/DataTables/media/css/jquery.dataTables.min.css"><link rel="stylesheet" href="libs/DataTables/media/css/material-design-lite.min.css"><link rel="stylesheet" href="styles/global-framework.css">
+    <style>
+        div.blue-theme .input-field .prefix, form.blue-theme .input-field .prefix {
+            color: #a0a0a0;
+            top: 8px;
+            left: 60px;
+            font-size: 25px;
+        }
+
+        .select-dropdown {
+            overflow-y: auto !important;
+        }
+
+        .texto {
+            text-align: justify;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .logo {
+            width: 350px !important;
+        }
+
+        #UpdatePanelCot {
+            width: 100%;
+        }
+    </style>
+    <title>
+	Seguro Educativo
+</title>
+    <script src="libs/jquery/dist/jquery.min.js"></script>
+    <script src="libs/alertifyjs/src/js/alertify.js"></script>
+    <script src="libs/object-fit-images/dist/ofi.browser.js"></script>
+    <script src="libs/picturefill/dist/picturefill.min.js"></script>
+    <script src="libs/materialize/dist/js/materialize.min.js"></script>
+    <script src="libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="libs/DataTables/media/js/jquery.dataTables.min.js"></script>
+    
+    <script src="js/datoscotizacion.js"></script>
+    <script type="text/javascript">
+
+        function cerrarpagina() {
+
+            window.close();
+            return false;
+
+        }
+
+    </script>
+<link href="/CotizadorEducativoEM/WebResource.axd?d=hcXDZhXiidgsQUtEo5iT33h4y0T3aU-VdlKO7fZjsnfVvzxv02xaTm58khyj4aswsOzHhVNJ0CfJtR91pMgBvCpHtTrdJJaa3JqTFimWVanWeIOcwLrz-OXPFqQhJYzTwhilbM19GvgyBKZRdTnMzdC1EFCK96eoNIpt55SZPF01&amp;t=637522801010986910" type="text/css" rel="stylesheet"></head>
+
+<body class="overflow-auto">
+    <form method="post" action="./datoscotizacion.aspx?ori=fil&amp;op=1&amp;per=157523&amp;age=1_8080&amp;em=-1" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/CotizadorEducativoEM/WebResource.axd?d=pynGkmcFUV13He1Qd6_TZLf3RtNe9-3Jl8LMF-kWmtF-upTjzfbfTihlx9s9uByrdcTd71fZN1iQJUjTj2cstw2&amp;t=638883092380000000" type="text/javascript"></script>
+
+
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=NJmAwtEo3Ipnlaxl6CMhvkuaX8PYlAjSMEmz6oqrQM6pKg2FqZvsJofw7moZ6BdcRcdooLWE4Jc-V6Eyg0WoBbK6MzvOzkaykiXKiwljOIs4OqnI6jEv8V0zX5ekVCOFgiAFd2Cr-_XVsflLjceFdH22eNEBKR-1k84GIs5TmYA1&amp;t=74a40145" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=dwY9oWetJoJoVpgL6Zq8OE_uIyurC2stAXGLdO_EaPDcziBWGu6U582CbafDZ1dKsXAj0QudL0djDno-FAuaEC3wUBbmYnhOmfSma08Pjte10yeSnWAN9pufUawsdvNCqMlBUxClFJ5Z206I2DqyPe1WDH8jH3sHI1QjLvcvIew1&amp;t=74a40145" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=eE6V8nDbUVn0gtG6hKNX_GbNdySM62bEy9fTaqybVfk9Pqe7dO_XOuDp4iaHCdkmYonkHwFDShN7xt9rWrUejQOUSbJGgqBFegbBxqFMPFE3UjxziW2Cv0Ub_xSSj45A0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=r7Burr0wQuBhUAFjce8_0_Ymhj-ydamB_hQ2emceXrxyy_rtKRMAmSvdgy3iHNkpmqfcL_aFF0w-1b-A2B6ZNk61RODm1G0CsXcmN2N42_FSSBLBJ4V42B-Ynn0K0DENN6h6INSBAojBoisWiG-9Vg2&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=jwf4VSQi7LeShc44FJ-gAQsjL374nhYmoV0lBpkCUPUusqXyVKcWzoFN95x9VBonnoiilxIeupwtpiQQIcMwktVojgyUhRFGldF4_Tjo7uzLCvtbXJmq6b7Dypa-KyGA0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=mcAASOSteirJeuV-3by3Udg2EMJbbRHrYouVPN7ec3MgNozdctOibU2rmUEctAk79l16p5FDs_W9z1Yw2vNTzyLecEvl_mLc0aGCwURhCJg1&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=HEFpVKbnoeQjkjHkFKu3MJfnx7g1BReDqqZw8ElmlvSo9w1PY1DfmPVGwRdkLRiNzj6iVo6L32bqCJAqlUbHyLSuzM2kHeCILaw2ov66gMqRPrMBKBa8OO74i1rWPZVx0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=V9BZfzKzDCsxAStwHbjCaLk5HDCD-hi9wcTp_uhZoRDCsmI1k57gBCXSNLseDvV-NxJbq3_wD4VY2sgeLKG7l2g8AJ1tKG6gjlvCkwc0iYSTW19G-8WD1VB8BGttmfZg0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=nai7mGcYyE2dix_TwveLDQj03mD4UoZ9A9bEfHrsFlfBPw_98yK6n5_wh1Vo_vQTyHUGfmMWI_RPDS4Ifx6rja-D1r0lIeyug61HNTnlG6btLsqb9l-mew4zD8qqfg0r0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=LQ1q2RBSthBAZhliMjtG_7hE0_jceExgNXIKwzMbr8SOLm4S9IChihS-B-Z5eRya7c6wpt4rzB816rkRWC5YZ38IiucLDPsTnEJP79WqK7WEh5VyBGPgFAEOMExW2rrS0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=VOYD8Xe7kQA0lniBYXVpAuHubKWECy9gKXe9SrARamSV6X-JkZHXPyvFYS33Fmtn8saUxpEo024o1GPkHyebWAmUk63JETSjjTHU9udavek_s7pnJEseheoCaOqbbPzY0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=iON9Jxe8QCRam1nkdNLgkQgJI76wGCF9BRGXVhL3G_LOx5A1gdN7oMWORIHuKplnG_mzawKlV-8J1kHCsd1FIaGdmyXbrtfWxt-hhchx81SD5B7aU7eZiMv4Ea-mqiD-0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=xGmPTKfsNy0_1Sr5I58kO15mBRfrg3YmLwHgDi4dxhX0RI-EO1TLOVPO39P9yIbiLnF6xFAtVnQBsOxqRq4WLUAeFEC7tzegoksIW7jNg4ncySCeJ1yNlhjSgibY48yV0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=yDT7ulzE00Yqzs5zd38bJ0k9dkbWVyw7qftzDaf6334wcjPQ7ZKrCaSnEp6d5h2vxLy6a8rks3rp8knhxSmHV3Y8Qg5_2ETSfPQJ2TZX2cr3OveEPFbScniepxCsIND80&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=5ib3lCcyinHeLQmkwMF7Eg7b8d2iYx3GvM6YKH3eqft3cXFDAoJ_quHBA623LOvA0KnDW9a7F__e8upj43-bTWaL8urs_iIQihHfyOQIfSonL9rXjjyPCU4um9IrEZnj0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=hOeJu0xhC-uW6Gf8ooKdXrwkAubCgY9zudr6kRwCNzJevh_Ww-btItWwG650OLF4TrWfbgbXi3T9YZQt_wZfBeR1rp3UK7WSLoC335trkRX2d9ApNCdO117xuTNPhJ5u0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=XlV9GqTk6b5uqDuL38kZ4IhmYL6EUc3R-DKol77LLBBhtrNHVMShICjR7UES3DoB8g2ScCcg8pGPLtvMf1J4SMLuTztx0_iIOozy4o_VM7Z2Nmge0r912II1oa1F7q290&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="FF52DCB1">
+	<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="">
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="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">
+</div>
+        <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ScriptManager1', 'form1', ['tUpdatePanel3','UpdatePanel3','tUpdatePanel8','UpdatePanel8','tUpdatePanel5','UpdatePanel5','tUpdatePanel11','UpdatePanel11','tUpdatePanel18','UpdatePanel18','tUpdatePanel2','UpdatePanel2','tUpdatePanel1','UpdatePanel1','tUpdatePanel4','UpdatePanel4','tUpdatePanel14','UpdatePanel14','tUpdatePanel13','UpdatePanel13','tUpdatePanel17','UpdatePanel17','tUpdatePanel16','UpdatePanel16','tUpdatePanelCot','UpdatePanelCot','tUpdatePanel23','UpdatePanel23','tUpdatePanel7','UpdatePanel7','tUpdatePanel9','UpdatePanel9','tUpdatePanel12','UpdatePanel12','tUpdatePanel10','UpdatePanel10'], ['Departamento','Departamento','DeptoColegio','DeptoColegio'], [], 90, '');
+//]]>
+</script>
+
+        <script type="text/javascript">
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(InIEvent);
+        </script>
+        <div class="wrapper">
+            <section class="layout fit-screen">
+                <article class="overflow-hidden display-flex min-width-300">
+                    <aside class="outlet s12">
+                        <header>
+                            <div class="row no-mg-bottom">
+                                <div class="col col-s-8 col-t-12 col-m-12 no-pd no-mg">
+                                    <span class="logo"></span>
+                                </div>
+                                <div class="col col-s-4 col-t-12 col-m-12">
+                                    <img class="mg-20" src="images/user.png">
+                                    <span id="MensajeBienvenida">CRUZ NORIS DEL SOCORRO NORIS DEL SOCORRO</span>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="row">
+                            <div class="col s12 blue-theme">
+                                <div class="row no-pd-top-bottom">
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="card-panel white lighten-5 z-depth-1 pd-top-10 pd-bottom-3">
+                                            <div class="row no-mg">
+                                                <div class="input-field col l4 col-t-4 col-m-12">
+                                                    <label id="Label1" class="active">Intermediario</label>
+                                                    <label id="lbNombreIntermediario">CRUZ NORIS DEL SOCORRO NORIS DEL SOCORRO</label>
+                                                </div>
+                                                <div class="input-field col l4 col-t-4 col-m-12">
+                                                    <label id="lblApoyo" class="active" for="lblApoyo">Apoyo institucional</label>
+                                                    <div id="UpdatePanel3">
+	
+                                                            <div class="select-wrapper aspNetDisabled"><span class="caret disabled">▼</span><input type="text" class="select-dropdown" readonly="true" disabled="" data-activates="select-options-b8652b3f-1e95-c6bc-2aab-88cc68cc210d" value="SOCORRO MALAGÓN"><ul id="select-options-b8652b3f-1e95-c6bc-2aab-88cc68cc210d" class="dropdown-content select-dropdown "><li class=""><span>SOCORRO MALAGÓN</span></li></ul><select name="ApoyoInst" id="ApoyoInst" disabled="disabled" class="aspNetDisabled initialized">
+		<option selected="selected" value="smalagon_3702@gsf.com">SOCORRO MALAGÓN</option>
+
+	</select></div>
+                                                        
+</div>
+                                                </div>
+                                                <div id="divIntermediarioTxt" class="input-field col l4 col-t-8">
+                                                    <div id="divEvento" class="col l8 col-t-6 no-pd">
+                                                        <div id="UpdatePanel8">
+	
+                                                                <input name="Evento" type="text" readonly="readonly" id="Evento" placeholder="">
+                                                                <label id="lblEvento" class="active">Evento</label>
+                                                            
+</div>
+                                                    </div>
+                                                    <div id="botonEvento" class="col l4 col-t-6 center-align no-pd">
+                                                        <input type="submit" name="BuscarEvento" value="Buscar" id="BuscarEvento" class="btn blue-grey lighten-5 light-blue-text text-darken-4 valign mg-right-10">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="input-field col s12 no-pd-top-bottom">
+                                            <span id="lblDatosSolicitante" class="name">Datos personales del solicitante</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l4 col-t-4 col-m-12">
+                                            <label class="active" for="TipoIdentificacion">Tipo de documento</label>
+                                            <div class="select-wrapper aspNetDisabled"><span class="caret disabled">▼</span><input type="text" class="select-dropdown" readonly="true" disabled="" data-activates="select-options-fedb67bf-ae1f-0b8d-a2df-8fa14405d9dd" value="Cédula de Ciudadanía" tabindex="4"><ul id="select-options-fedb67bf-ae1f-0b8d-a2df-8fa14405d9dd" class="dropdown-content select-dropdown "><li class=""><span>...</span></li><li class=""><span>Cédula de Ciudadanía</span></li><li class=""><span>Pasaporte</span></li><li class=""><span>Cédula de Extranjería</span></li><li class=""><span>Permiso Especial de Permanencia</span></li><li class=""><span>Permiso de Protección Temporal</span></li></ul><select name="TipoIdentificacion" id="TipoIdentificacion" disabled="disabled" tabindex="4" class="aspNetDisabled initialized">
+	<option value="...">...</option>
+	<option selected="selected" value="1">Cédula de Ciudadanía</option>
+	<option value="3">Pasaporte</option>
+	<option value="4">Cédula de Extranjería</option>
+	<option value="10">Permiso Especial de Permanencia</option>
+	<option value="11">Permiso de Protección Temporal</option>
+
+</select></div>
+                                        </div>
+                                        <div class="input-field col l4 col-t-4">
+                                            <input name="NroIdentificacion" type="text" value="103636211" maxlength="10" id="NroIdentificacion" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="NroIdentificacion">Número de documento</label>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l4 col-t-4 col-m-12">
+                                            <input name="NomTom" type="text" value="DIEGO" id="NomTom" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="NomTom">Nombres</label>
+                                            
+                                        </div>
+                                        <div class="input-field col l4 col-t-4 col-m-12">
+                                            <input name="ApeTom" type="text" value="PEREZ" id="ApeTom" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="ApeTom">Primer apellido</label>
+                                            
+                                        </div>
+                                        <div class="input-field col l4 col-t-4 col-m-12">
+                                            <input name="ApeTom2" type="text" value="RODRIGUEZ" id="ApeTom2" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="ApeTom2">Segundo apellido</label>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l4 col-t-4 col-m-6">
+                                            <input name="FecNacimientoTom" type="text" value="02/11/1987" id="FecNacimientoTom" disabled="disabled" class="aspNetDisabled datepicker picker__input" placeholder="" onchange="CalcularEdadTom()" readonly="" tabindex="-1" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="FecNacimientoTom_root"><div class="picker" id="FecNacimientoTom_root" tabindex="0" aria-hidden="true"><div class="picker__holder"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__date-display"><div class="picker__weekday-display">Lunes</div><div class="picker__month-display"><div>Nov</div></div><div class="picker__day-display"><div>2</div></div><div class="picker__year-display"><div>1987</div></div></div><div class="picker__calendar-container"><div class="picker__header"><select class="picker__select--month browser-default" disabled="" aria-controls="FecNacimientoTom_table" title="Seleccione un mes"><option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option><option value="9">Octubre</option><option value="10" selected="">Noviembre</option><option value="11">Diciembre</option></select><select class="picker__select--year browser-default" disabled="" aria-controls="FecNacimientoTom_table" title="Selecccione un año"><option value="1926">1926</option><option value="1927">1927</option><option value="1928">1928</option><option value="1929">1929</option><option value="1930">1930</option><option value="1931">1931</option><option value="1932">1932</option><option value="1933">1933</option><option value="1934">1934</option><option value="1935">1935</option><option value="1936">1936</option><option value="1937">1937</option><option value="1938">1938</option><option value="1939">1939</option><option value="1940">1940</option><option value="1941">1941</option><option value="1942">1942</option><option value="1943">1943</option><option value="1944">1944</option><option value="1945">1945</option><option value="1946">1946</option><option value="1947">1947</option><option value="1948">1948</option><option value="1949">1949</option><option value="1950">1950</option><option value="1951">1951</option><option value="1952">1952</option><option value="1953">1953</option><option value="1954">1954</option><option value="1955">1955</option><option value="1956">1956</option><option value="1957">1957</option><option value="1958">1958</option><option value="1959">1959</option><option value="1960">1960</option><option value="1961">1961</option><option value="1962">1962</option><option value="1963">1963</option><option value="1964">1964</option><option value="1965">1965</option><option value="1966">1966</option><option value="1967">1967</option><option value="1968">1968</option><option value="1969">1969</option><option value="1970">1970</option><option value="1971">1971</option><option value="1972">1972</option><option value="1973">1973</option><option value="1974">1974</option><option value="1975">1975</option><option value="1976">1976</option><option value="1977">1977</option><option value="1978">1978</option><option value="1979">1979</option><option value="1980">1980</option><option value="1981">1981</option><option value="1982">1982</option><option value="1983">1983</option><option value="1984">1984</option><option value="1985">1985</option><option value="1986">1986</option><option value="1987" selected="">1987</option><option value="1988">1988</option><option value="1989">1989</option><option value="1990">1990</option><option value="1991">1991</option><option value="1992">1992</option><option value="1993">1993</option><option value="1994">1994</option><option value="1995">1995</option><option value="1996">1996</option><option value="1997">1997</option><option value="1998">1998</option><option value="1999">1999</option><option value="2000">2000</option><option value="2001">2001</option><option value="2002">2002</option><option value="2003">2003</option><option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option><option value="2009">2009</option><option value="2010">2010</option><option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="FecNacimientoTom_table" title="Mes Anterior"> </div><div class="picker__nav--next" data-nav="1" role="button" aria-controls="FecNacimientoTom_table" title="Siguiente Mes"> </div></div><table class="picker__table" id="FecNacimientoTom_table" role="grid" aria-controls="FecNacimientoTom" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Domingo">D</th><th class="picker__weekday" scope="col" title="Lunes">L</th><th class="picker__weekday" scope="col" title="Martes">M</th><th class="picker__weekday" scope="col" title="Miercoles">X</th><th class="picker__weekday" scope="col" title="Jueves">J</th><th class="picker__weekday" scope="col" title="Viernes">V</th><th class="picker__weekday" scope="col" title="Sábado">S</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="562741200000" role="gridcell" aria-label="01/11/1987">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--selected picker__day--highlighted" data-pick="562827600000" role="gridcell" aria-label="02/11/1987" aria-selected="true" aria-activedescendant="true">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="562914000000" role="gridcell" aria-label="03/11/1987">3</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563000400000" role="gridcell" aria-label="04/11/1987">4</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563086800000" role="gridcell" aria-label="05/11/1987">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563173200000" role="gridcell" aria-label="06/11/1987">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563259600000" role="gridcell" aria-label="07/11/1987">7</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563346000000" role="gridcell" aria-label="08/11/1987">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563432400000" role="gridcell" aria-label="09/11/1987">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563518800000" role="gridcell" aria-label="10/11/1987">10</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563605200000" role="gridcell" aria-label="11/11/1987">11</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563691600000" role="gridcell" aria-label="12/11/1987">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563778000000" role="gridcell" aria-label="13/11/1987">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563864400000" role="gridcell" aria-label="14/11/1987">14</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="563950800000" role="gridcell" aria-label="15/11/1987">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564037200000" role="gridcell" aria-label="16/11/1987">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564123600000" role="gridcell" aria-label="17/11/1987">17</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564210000000" role="gridcell" aria-label="18/11/1987">18</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564296400000" role="gridcell" aria-label="19/11/1987">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564382800000" role="gridcell" aria-label="20/11/1987">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564469200000" role="gridcell" aria-label="21/11/1987">21</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564555600000" role="gridcell" aria-label="22/11/1987">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564642000000" role="gridcell" aria-label="23/11/1987">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564728400000" role="gridcell" aria-label="24/11/1987">24</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564814800000" role="gridcell" aria-label="25/11/1987">25</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564901200000" role="gridcell" aria-label="26/11/1987">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="564987600000" role="gridcell" aria-label="27/11/1987">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="565074000000" role="gridcell" aria-label="28/11/1987">28</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="565160400000" role="gridcell" aria-label="29/11/1987">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="565246800000" role="gridcell" aria-label="30/11/1987">30</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565333200000" role="gridcell" aria-label="01/12/1987">1</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565419600000" role="gridcell" aria-label="02/12/1987">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565506000000" role="gridcell" aria-label="03/12/1987">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565592400000" role="gridcell" aria-label="04/12/1987">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565678800000" role="gridcell" aria-label="05/12/1987">5</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565765200000" role="gridcell" aria-label="06/12/1987">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565851600000" role="gridcell" aria-label="07/12/1987">7</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="565938000000" role="gridcell" aria-label="08/12/1987">8</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="566024400000" role="gridcell" aria-label="09/12/1987">9</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="566110800000" role="gridcell" aria-label="10/12/1987">10</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="566197200000" role="gridcell" aria-label="11/12/1987">11</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="566283600000" role="gridcell" aria-label="12/12/1987">12</div></td></tr></tbody></table></div><div class="picker__footer"><button class="btn-flat picker__today" type="button" data-pick="1783573200000" disabled="" aria-controls="FecNacimientoTom">Hoy</button><button class="btn-flat picker__clear" type="button" data-clear="1" disabled="" aria-controls="FecNacimientoTom">Limpiar</button><button class="btn-flat picker__close" type="button" data-close="true" disabled="" aria-controls="FecNacimientoTom">Cerrar</button></div></div></div></div></div></div>
+                                            
+                                            <label class="active" for="FecNacimientoTom">Fecha de nacimiento</label>
+                                        </div>
+                                        <div class="input-field col l4 col-t-4 col-m-6">
+                                            <input name="EdadTom" type="text" value="38" readonly="readonly" id="EdadTom" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="EdadTom">Edad</label>
+                                        </div>
+                                        <div class="input-field col l4 col-t-4 col-m-12">
+                                            <label class="active" for="GeneroTomador">Sexo</label>
+                                            <span class="aspNetDisabled"><input id="GeneroMTomador" type="radio" name="GeneroTomador" value="GeneroMTomador" checked="checked" disabled="disabled"><label for="GeneroMTomador">Masculino</label></span>
+                                            <span class="aspNetDisabled"><input id="GeneroFTomador" type="radio" name="GeneroTomador" value="GeneroFTomador" disabled="disabled"><label for="GeneroFTomador">Femenino</label></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l3 col-t-6 col-m-12">
+                                            <input name="CorreoCliente" type="text" value="qa_global_ciudadania_3636211@globaleguros.com" id="CorreoCliente" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="CorreoCliente">Correo electrónico</label>
+                                        </div>
+                                        <div class="input-field col l3 col-t-6 col-m-12">
+                                            <input name="Celular" type="text" value="3123636211" maxlength="10" id="Celular" disabled="disabled" class="aspNetDisabled" placeholder="">
+                                            <label class="active" for="Celular">Celular</label>
+                                            
+                                        </div>
+                                        <div id="UpdatePanel5">
+	
+                                                <div class="input-field col l3 col-t-6 col-m-12">
+                                                    <label class="active" for="Departamento">Departamento de contacto</label>
+                                                    <div class="select-wrapper aspNetDisabled"><span class="caret disabled">▼</span><input type="text" class="select-dropdown" readonly="true" disabled="" data-activates="select-options-9a350ffd-d133-663a-dd91-bf854d3994e8" value="MAGDALENA"><ul id="select-options-9a350ffd-d133-663a-dd91-bf854d3994e8" class="dropdown-content select-dropdown "><li class=""><span>...</span></li><li class=""><span>DISTRITO CAPITAL</span></li><li class=""><span>AMAZONAS</span></li><li class=""><span>ANTIOQUIA</span></li><li class=""><span>ARAUCA</span></li><li class=""><span>ATLANTICO</span></li><li class=""><span>BOLIVAR</span></li><li class=""><span>BOYACA</span></li><li class=""><span>CALDAS</span></li><li class=""><span>CAQUETA</span></li><li class=""><span>CASANARE</span></li><li class=""><span>CAUCA</span></li><li class=""><span>CESAR</span></li><li class=""><span>CHOCO</span></li><li class=""><span>CORDOBA</span></li><li class=""><span>CUNDINAMARCA</span></li><li class=""><span>LA GUAJIRA</span></li><li class=""><span>GUAINIA</span></li><li class=""><span>GUAVIARE</span></li><li class=""><span>HUILA</span></li><li class=""><span>MAGDALENA</span></li><li class=""><span>META</span></li><li class=""><span>NARIÑO</span></li><li class=""><span>NORTE DE SANTANDER</span></li><li class=""><span>PUTUMAYO</span></li><li class=""><span>QUINDIO</span></li><li class=""><span>RISARALDA</span></li><li class=""><span>SAN ANDRES</span></li><li class=""><span>SANTANDER</span></li><li class=""><span>SUCRE</span></li><li class=""><span>TOLIMA</span></li><li class=""><span>VALLE DEL CAUCA</span></li><li class=""><span>VAUPES</span></li><li class=""><span>VICHADA</span></li></ul><select name="Departamento" onchange="javascript:setTimeout('__doPostBack(\'Departamento\',\'\')', 0)" id="Departamento" disabled="disabled" class="aspNetDisabled initialized">
+		<option value="0">...</option>
+		<option value="34">DISTRITO CAPITAL</option>
+		<option value="1">AMAZONAS</option>
+		<option value="2">ANTIOQUIA</option>
+		<option value="3">ARAUCA</option>
+		<option value="4">ATLANTICO</option>
+		<option value="5">BOLIVAR</option>
+		<option value="6">BOYACA</option>
+		<option value="7">CALDAS</option>
+		<option value="8">CAQUETA</option>
+		<option value="9">CASANARE</option>
+		<option value="10">CAUCA</option>
+		<option value="11">CESAR</option>
+		<option value="12">CHOCO</option>
+		<option value="13">CORDOBA</option>
+		<option value="14">CUNDINAMARCA</option>
+		<option value="15">LA GUAJIRA</option>
+		<option value="16">GUAINIA</option>
+		<option value="17">GUAVIARE</option>
+		<option value="18">HUILA</option>
+		<option selected="selected" value="19">MAGDALENA</option>
+		<option value="20">META</option>
+		<option value="21">NARIÑO</option>
+		<option value="22">NORTE DE SANTANDER</option>
+		<option value="24">PUTUMAYO</option>
+		<option value="25">QUINDIO</option>
+		<option value="26">RISARALDA</option>
+		<option value="27">SAN ANDRES</option>
+		<option value="28">SANTANDER</option>
+		<option value="29">SUCRE</option>
+		<option value="30">TOLIMA</option>
+		<option value="31">VALLE DEL CAUCA</option>
+		<option value="32">VAUPES</option>
+		<option value="33">VICHADA</option>
+
+	</select></div>
+                                                </div>
+                                                <div class="input-field col l3 col-t-6 col-m-12">
+                                                    <label class="active" for="Ciudad">Ciudad de contacto</label>
+                                                    <div class="select-wrapper aspNetDisabled"><span class="caret disabled">▼</span><input type="text" class="select-dropdown" readonly="true" disabled="" data-activates="select-options-31c7af2f-e040-f39a-8649-465ead84b775" value="ARIGUANI"><ul id="select-options-31c7af2f-e040-f39a-8649-465ead84b775" class="dropdown-content select-dropdown "><li class=""><span>ALGARROBO</span></li><li class=""><span>ARACATACA</span></li><li class=""><span>ARIGUANI</span></li><li class=""><span>CERRO SAN ANTONIO</span></li><li class=""><span>CHIVOLO</span></li><li class=""><span>CIENAGA</span></li><li class=""><span>EL BANCO</span></li><li class=""><span>EL PIÑON</span></li><li class=""><span>EL RETEN</span></li><li class=""><span>FUNDACION</span></li><li class=""><span>GUAMAL</span></li><li class=""><span>NUEVA GRANADA</span></li><li class=""><span>PEDRAZA</span></li><li class=""><span>PIJINO DEL CARMEN</span></li><li class=""><span>PIVIJAY</span></li><li class=""><span>PLATO</span></li><li class=""><span>PUEBLOVIEJO</span></li><li class=""><span>REMOLINO</span></li><li class=""><span>SABANAS DE SAN ANGEL</span></li><li class=""><span>SALAMINA</span></li><li class=""><span>SAN SEBASTIAN DE BUE</span></li><li class=""><span>SAN ZENON</span></li><li class=""><span>SANTA ANA</span></li><li class=""><span>SANTA BARBARA DE PIN</span></li><li class=""><span>SANTA MARTA</span></li><li class=""><span>SITIONUEVO</span></li><li class=""><span>TENERIFE</span></li><li class=""><span>ZAPAYAN</span></li><li class=""><span>ZONA BANANERA</span></li></ul><select name="Ciudad" id="Ciudad" disabled="disabled" class="aspNetDisabled initialized">
+		<option value="14">ALGARROBO</option>
+		<option value="15">ARACATACA</option>
+		<option selected="selected" value="2">ARIGUANI</option>
+		<option value="16">CERRO SAN ANTONIO</option>
+		<option value="4">CHIVOLO</option>
+		<option value="3">CIENAGA</option>
+		<option value="5">EL BANCO</option>
+		<option value="17">EL PIÑON</option>
+		<option value="18">EL RETEN</option>
+		<option value="6">FUNDACION</option>
+		<option value="19">GUAMAL</option>
+		<option value="20">NUEVA GRANADA</option>
+		<option value="21">PEDRAZA</option>
+		<option value="22">PIJINO DEL CARMEN</option>
+		<option value="23">PIVIJAY</option>
+		<option value="7">PLATO</option>
+		<option value="8">PUEBLOVIEJO</option>
+		<option value="9">REMOLINO</option>
+		<option value="25">SABANAS DE SAN ANGEL</option>
+		<option value="10">SALAMINA</option>
+		<option value="26">SAN SEBASTIAN DE BUE</option>
+		<option value="11">SAN ZENON</option>
+		<option value="27">SANTA ANA</option>
+		<option value="28">SANTA BARBARA DE PIN</option>
+		<option value="1">SANTA MARTA</option>
+		<option value="12">SITIONUEVO</option>
+		<option value="13">TENERIFE</option>
+		<option value="29">ZAPAYAN</option>
+		<option value="30">ZONA BANANERA</option>
+
+	</select></div>
+                                                </div>
+                                            
+</div>
+                                    </div>
+                                    <div class="row no-pd-top-bottom mg-bottom-40">
+                                        <div class="input-field col s12 no-pd-top-bottom">
+                                            <span class="name">Datos del beneficiario</span>
+                                        </div>
+                                    </div>
+                                    <div id="UpdatePanel11">
+	
+                                            
+                                            
+                                            
+                                            <div id="divBeneficiario">
+                                                <div class="row">
+                                                    <div class="input-field col l4 col-t-6 col-m-12">
+                                                        <label class="active" for="TipoIdentificacionBen">Tipo de documento</label>
+                                                        <div class="select-wrapper cssDropDownList1"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-e5a45554-0143-2931-9b85-062cbd97690c" value="..."><ul id="select-options-e5a45554-0143-2931-9b85-062cbd97690c" class="dropdown-content select-dropdown "><li class=""><span>...</span></li><li class=""><span>Registro Civil</span></li><li class=""><span>Tarjeta de Identidad</span></li></ul><select name="TipoIdentificacionBen" onchange="javascript:setTimeout('__doPostBack(\'TipoIdentificacionBen\',\'\')', 0)" id="TipoIdentificacionBen" class="cssDropDownList1 initialized">
+		<option selected="selected" value="-1">...</option>
+		<option value="6">Registro Civil</option>
+		<option value="5">Tarjeta de Identidad</option>
+
+	</select></div>
+                                                    </div>
+                                                    <div class="input-field col l4 col-t-6 col-m-12">
+                                                        <input name="NroIdentificacionBen" type="text" maxlength="10" onchange="javascript:setTimeout('__doPostBack(\'NroIdentificacionBen\',\'\')', 0)" onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;" id="NroIdentificacionBen" placeholder="">
+                                                        <label id="lblNroIdentificacionBenef" class="active" for="NroIdentificacionBen">Número de documento</label>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="input-field col l4 col-t-4 col-m-12">
+                                                        <input name="NomBen" type="text" id="NomBen" placeholder="">
+                                                        <label class="active" for="NomBen">Nombres</label>
+                                                        
+                                                    </div>
+                                                    <div class="input-field col l4 col-t-4 col-m-12">
+                                                        <input name="ApeBen" type="text" id="ApeBen" placeholder="">
+                                                        <label class="active" for="ApeBen">Primer apellido</label>
+                                                        
+                                                    </div>
+                                                    <div class="input-field col l4 col-t-4 col-m-12">
+                                                        <input name="ApeBen2" type="text" id="ApeBen2" placeholder="">
+                                                        <label class="active" for="ApeBen2">Segundo apellido</label>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="input-field col l3 col-t-4 col-m-6">
+                                                        <input name="FecNacimientoBen" type="text" id="FecNacimientoBen" tabindex="-1" class="datepicker picker__input" placeholder="" onchange="CalcularEdadBen()" readonly="" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="FecNacimientoBen_root"><div class="picker" id="FecNacimientoBen_root" tabindex="0" aria-hidden="true"><div class="picker__holder"><div class="picker__frame"><div class="picker__wrap"><div class="picker__box"><div class="picker__date-display"><div class="picker__weekday-display">Jueves</div><div class="picker__month-display"><div>Jul</div></div><div class="picker__day-display"><div>9</div></div><div class="picker__year-display"><div>2026</div></div></div><div class="picker__calendar-container"><div class="picker__header"><select class="picker__select--month browser-default" disabled="" aria-controls="FecNacimientoBen_table" title="Seleccione un mes"><option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option><option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option><option value="6" selected="">Julio</option><option value="7" disabled="">Agosto</option><option value="8" disabled="">Septiembre</option><option value="9" disabled="">Octubre</option><option value="10" disabled="">Noviembre</option><option value="11" disabled="">Diciembre</option></select><select class="picker__select--year browser-default" disabled="" aria-controls="FecNacimientoBen_table" title="Selecccione un año"><option value="1926">1926</option><option value="1927">1927</option><option value="1928">1928</option><option value="1929">1929</option><option value="1930">1930</option><option value="1931">1931</option><option value="1932">1932</option><option value="1933">1933</option><option value="1934">1934</option><option value="1935">1935</option><option value="1936">1936</option><option value="1937">1937</option><option value="1938">1938</option><option value="1939">1939</option><option value="1940">1940</option><option value="1941">1941</option><option value="1942">1942</option><option value="1943">1943</option><option value="1944">1944</option><option value="1945">1945</option><option value="1946">1946</option><option value="1947">1947</option><option value="1948">1948</option><option value="1949">1949</option><option value="1950">1950</option><option value="1951">1951</option><option value="1952">1952</option><option value="1953">1953</option><option value="1954">1954</option><option value="1955">1955</option><option value="1956">1956</option><option value="1957">1957</option><option value="1958">1958</option><option value="1959">1959</option><option value="1960">1960</option><option value="1961">1961</option><option value="1962">1962</option><option value="1963">1963</option><option value="1964">1964</option><option value="1965">1965</option><option value="1966">1966</option><option value="1967">1967</option><option value="1968">1968</option><option value="1969">1969</option><option value="1970">1970</option><option value="1971">1971</option><option value="1972">1972</option><option value="1973">1973</option><option value="1974">1974</option><option value="1975">1975</option><option value="1976">1976</option><option value="1977">1977</option><option value="1978">1978</option><option value="1979">1979</option><option value="1980">1980</option><option value="1981">1981</option><option value="1982">1982</option><option value="1983">1983</option><option value="1984">1984</option><option value="1985">1985</option><option value="1986">1986</option><option value="1987">1987</option><option value="1988">1988</option><option value="1989">1989</option><option value="1990">1990</option><option value="1991">1991</option><option value="1992">1992</option><option value="1993">1993</option><option value="1994">1994</option><option value="1995">1995</option><option value="1996">1996</option><option value="1997">1997</option><option value="1998">1998</option><option value="1999">1999</option><option value="2000">2000</option><option value="2001">2001</option><option value="2002">2002</option><option value="2003">2003</option><option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option><option value="2009">2009</option><option value="2010">2010</option><option value="2011">2011</option><option value="2012">2012</option><option value="2013">2013</option><option value="2014">2014</option><option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option><option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected="">2026</option></select><div class="picker__nav--prev" data-nav="-1" role="button" aria-controls="FecNacimientoBen_table" title="Mes Anterior"> </div><div class="picker__nav--next picker__nav--disabled" data-nav="1" role="button" aria-controls="FecNacimientoBen_table" title="Siguiente Mes"> </div></div><table class="picker__table" id="FecNacimientoBen_table" role="grid" aria-controls="FecNacimientoBen" aria-readonly="true"><thead><tr><th class="picker__weekday" scope="col" title="Domingo">D</th><th class="picker__weekday" scope="col" title="Lunes">L</th><th class="picker__weekday" scope="col" title="Martes">M</th><th class="picker__weekday" scope="col" title="Miercoles">X</th><th class="picker__weekday" scope="col" title="Jueves">J</th><th class="picker__weekday" scope="col" title="Viernes">V</th><th class="picker__weekday" scope="col" title="Sábado">S</th></tr></thead><tbody><tr><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1782622800000" role="gridcell" aria-label="28/06/2026">28</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1782709200000" role="gridcell" aria-label="29/06/2026">29</div></td><td role="presentation"><div class="picker__day picker__day--outfocus" data-pick="1782795600000" role="gridcell" aria-label="30/06/2026">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1782882000000" role="gridcell" aria-label="01/07/2026">1</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1782968400000" role="gridcell" aria-label="02/07/2026">2</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1783054800000" role="gridcell" aria-label="03/07/2026">3</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1783141200000" role="gridcell" aria-label="04/07/2026">4</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1783227600000" role="gridcell" aria-label="05/07/2026">5</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1783314000000" role="gridcell" aria-label="06/07/2026">6</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1783400400000" role="gridcell" aria-label="07/07/2026">7</div></td><td role="presentation"><div class="picker__day picker__day--infocus" data-pick="1783486800000" role="gridcell" aria-label="08/07/2026">8</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--today picker__day--highlighted" data-pick="1783573200000" role="gridcell" aria-label="09/07/2026" aria-activedescendant="true">9</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1783659600000" role="gridcell" aria-label="10/07/2026" aria-disabled="true">10</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1783746000000" role="gridcell" aria-label="11/07/2026" aria-disabled="true">11</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1783832400000" role="gridcell" aria-label="12/07/2026" aria-disabled="true">12</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1783918800000" role="gridcell" aria-label="13/07/2026" aria-disabled="true">13</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784005200000" role="gridcell" aria-label="14/07/2026" aria-disabled="true">14</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784091600000" role="gridcell" aria-label="15/07/2026" aria-disabled="true">15</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784178000000" role="gridcell" aria-label="16/07/2026" aria-disabled="true">16</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784264400000" role="gridcell" aria-label="17/07/2026" aria-disabled="true">17</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784350800000" role="gridcell" aria-label="18/07/2026" aria-disabled="true">18</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784437200000" role="gridcell" aria-label="19/07/2026" aria-disabled="true">19</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784523600000" role="gridcell" aria-label="20/07/2026" aria-disabled="true">20</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784610000000" role="gridcell" aria-label="21/07/2026" aria-disabled="true">21</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784696400000" role="gridcell" aria-label="22/07/2026" aria-disabled="true">22</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784782800000" role="gridcell" aria-label="23/07/2026" aria-disabled="true">23</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784869200000" role="gridcell" aria-label="24/07/2026" aria-disabled="true">24</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1784955600000" role="gridcell" aria-label="25/07/2026" aria-disabled="true">25</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1785042000000" role="gridcell" aria-label="26/07/2026" aria-disabled="true">26</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1785128400000" role="gridcell" aria-label="27/07/2026" aria-disabled="true">27</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1785214800000" role="gridcell" aria-label="28/07/2026" aria-disabled="true">28</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1785301200000" role="gridcell" aria-label="29/07/2026" aria-disabled="true">29</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1785387600000" role="gridcell" aria-label="30/07/2026" aria-disabled="true">30</div></td><td role="presentation"><div class="picker__day picker__day--infocus picker__day--disabled" data-pick="1785474000000" role="gridcell" aria-label="31/07/2026" aria-disabled="true">31</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1785560400000" role="gridcell" aria-label="01/08/2026" aria-disabled="true">1</div></td></tr><tr><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1785646800000" role="gridcell" aria-label="02/08/2026" aria-disabled="true">2</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1785733200000" role="gridcell" aria-label="03/08/2026" aria-disabled="true">3</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1785819600000" role="gridcell" aria-label="04/08/2026" aria-disabled="true">4</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1785906000000" role="gridcell" aria-label="05/08/2026" aria-disabled="true">5</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1785992400000" role="gridcell" aria-label="06/08/2026" aria-disabled="true">6</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1786078800000" role="gridcell" aria-label="07/08/2026" aria-disabled="true">7</div></td><td role="presentation"><div class="picker__day picker__day--outfocus picker__day--disabled" data-pick="1786165200000" role="gridcell" aria-label="08/08/2026" aria-disabled="true">8</div></td></tr></tbody></table></div><div class="picker__footer"><button class="btn-flat picker__today" type="button" data-pick="1783573200000" disabled="" aria-controls="FecNacimientoBen">Hoy</button><button class="btn-flat picker__clear" type="button" data-clear="1" disabled="" aria-controls="FecNacimientoBen">Limpiar</button><button class="btn-flat picker__close" type="button" data-close="true" disabled="" aria-controls="FecNacimientoBen">Cerrar</button></div></div></div></div></div></div>
+                                                        
+                                                        <label class="active" for="FecNacimientoBen">Fecha de nacimiento</label>
+                                                    </div>
+                                                    <div class="input-field col l3 col-t-4 col-m-6">
+                                                        <div id="UpdatePanel18">
+		
+                                                                <input name="EdadBen" type="text" readonly="readonly" id="EdadBen" placeholder="">
+                                                                <label class="active" for="EdadBen">Edad</label>
+                                                            
+	</div>
+                                                    </div>
+                                                    <div class="input-field col l3 col-t-4 col-m-12">
+                                                        <label class="active">Sexo</label>
+                                                        <input id="GeneroMBenef" type="radio" name="GeneroBenef" value="GeneroMBenef"><label for="GeneroMBenef">Masculino</label>
+                                                        <input id="GeneroFBenef" type="radio" name="GeneroBenef" value="GeneroFBenef"><label for="GeneroFBenef">Femenino</label>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        
+</div>
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="input-field col s12 no-pd-top-bottom">
+                                            <span class="name">Datos sobre el colegio</span>
+                                            <span id="msg" class="type">(Si el beneficiario estudia en colegio, diligencie esta información.)</span>
+                                        </div>
+                                    </div>
+                                    <div id="UpdatePanel2">
+	
+                                            
+                                            <div id="divColegio" class="row no-mg">
+                                                <div class="row no-mg">
+                                                    <div id="UpdatePanel1">
+		
+                                                            <div class="input-field col col-s-4 col-t-6 col-m-12">
+                                                                <div class="select-wrapper"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-d5bc0fa5-5627-adfe-cfa7-4fb07d50496b" value="..."><ul id="select-options-d5bc0fa5-5627-adfe-cfa7-4fb07d50496b" class="dropdown-content select-dropdown "><li class=""><span>...</span></li><li class=""><span>DISTRITO CAPITAL</span></li><li class=""><span>AMAZONAS</span></li><li class=""><span>ANTIOQUIA</span></li><li class=""><span>ARAUCA</span></li><li class=""><span>ATLANTICO</span></li><li class=""><span>BOLIVAR</span></li><li class=""><span>BOYACA</span></li><li class=""><span>CALDAS</span></li><li class=""><span>CAQUETA</span></li><li class=""><span>CASANARE</span></li><li class=""><span>CAUCA</span></li><li class=""><span>CESAR</span></li><li class=""><span>CHOCO</span></li><li class=""><span>CORDOBA</span></li><li class=""><span>CUNDINAMARCA</span></li><li class=""><span>LA GUAJIRA</span></li><li class=""><span>GUAINIA</span></li><li class=""><span>GUAVIARE</span></li><li class=""><span>HUILA</span></li><li class=""><span>MAGDALENA</span></li><li class=""><span>META</span></li><li class=""><span>NARIÑO</span></li><li class=""><span>NORTE DE SANTANDER</span></li><li class=""><span>PUTUMAYO</span></li><li class=""><span>QUINDIO</span></li><li class=""><span>RISARALDA</span></li><li class=""><span>SAN ANDRES</span></li><li class=""><span>SANTANDER</span></li><li class=""><span>SUCRE</span></li><li class=""><span>TOLIMA</span></li><li class=""><span>VALLE DEL CAUCA</span></li><li class=""><span>VAUPES</span></li><li class=""><span>VICHADA</span></li></ul><select name="DeptoColegio" onchange="javascript:setTimeout('__doPostBack(\'DeptoColegio\',\'\')', 0)" id="DeptoColegio" class="initialized">
+			<option selected="selected" value="0">...</option>
+			<option value="34">DISTRITO CAPITAL</option>
+			<option value="1">AMAZONAS</option>
+			<option value="2">ANTIOQUIA</option>
+			<option value="3">ARAUCA</option>
+			<option value="4">ATLANTICO</option>
+			<option value="5">BOLIVAR</option>
+			<option value="6">BOYACA</option>
+			<option value="7">CALDAS</option>
+			<option value="8">CAQUETA</option>
+			<option value="9">CASANARE</option>
+			<option value="10">CAUCA</option>
+			<option value="11">CESAR</option>
+			<option value="12">CHOCO</option>
+			<option value="13">CORDOBA</option>
+			<option value="14">CUNDINAMARCA</option>
+			<option value="15">LA GUAJIRA</option>
+			<option value="16">GUAINIA</option>
+			<option value="17">GUAVIARE</option>
+			<option value="18">HUILA</option>
+			<option value="19">MAGDALENA</option>
+			<option value="20">META</option>
+			<option value="21">NARIÑO</option>
+			<option value="22">NORTE DE SANTANDER</option>
+			<option value="24">PUTUMAYO</option>
+			<option value="25">QUINDIO</option>
+			<option value="26">RISARALDA</option>
+			<option value="27">SAN ANDRES</option>
+			<option value="28">SANTANDER</option>
+			<option value="29">SUCRE</option>
+			<option value="30">TOLIMA</option>
+			<option value="31">VALLE DEL CAUCA</option>
+			<option value="32">VAUPES</option>
+			<option value="33">VICHADA</option>
+
+		</select></div>
+                                                                <label>Departamento</label>
+                                                            </div>
+                                                            <div class="input-field col col-s-4 col-t-6 col-m-12">
+                                                                <div class="select-wrapper"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-c9739094-c1d3-dc47-f0d9-eebb9afc3878" value="..."><ul id="select-options-c9739094-c1d3-dc47-f0d9-eebb9afc3878" class="dropdown-content select-dropdown "><li class=""><span>...</span></li></ul><select name="CiudadColegio" id="CiudadColegio" class="initialized">
+			<option value="0">...</option>
+
+		</select></div>
+                                                                <label>Municipio</label>
+                                                            </div>
+                                                        
+	</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="input-field col col-s-6 col-t-12 col-m-12">
+                                                        <div id="UpdatePanel4">
+		
+                                                                <input name="ColegioSeleccionado" type="text" id="ColegioSeleccionado" placeholder="Escriba el nombre de la institución">
+                                                            
+	</div>
+                                                        <label class="active" for="ColegioSeleccionado">Institución educativa</label>
+                                                    </div>
+                                                    <div id="UpdatePanel14">
+		
+                                                            <div class="col col-s-2 col-t-12 col-m-12 mg-top-20 mg-bottom-20">
+                                                                <i class="btn waves-effect waves-light grey lighten-5 text-normal grey-text no-outline waves-input-wrapper" style=""><input type="submit" name="AbreBusquedaColegio" value="Buscar" id="AbreBusquedaColegio" class="waves-button-input"></i>
+                                                            </div>
+                                                        
+	</div>
+
+                                                </div>
+
+                                                <div class="row">
+                                                    <div id="UpdatePanel13">
+		
+                                                            <div class="input-field col col-s-3 col-t-4 col-m-12">
+                                                                <label class="active" for="CursosColegio">Curso</label>
+                                                                <div class="select-wrapper"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-14388b88-dc1b-9204-f2d3-2f63ce5c3905" value="..."><ul id="select-options-14388b88-dc1b-9204-f2d3-2f63ce5c3905" class="dropdown-content select-dropdown "><li class=""><span>...</span></li></ul><select name="CursosColegio" id="CursosColegio" class="initialized">
+			<option value="...">...</option>
+
+		</select></div>
+                                                            </div>
+                                                        
+	</div>
+                                                </div>
+                                            </div>
+                                            
+                                        
+</div>
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="input-field col s12 no-pd-top-bottom">
+                                            <span class="name">Datos sobre el producto</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="UpdatePanel17">
+	
+                                                <div class="input-field col col-s-4 col-t-9 col-m-12">
+                                                    <label class="active" for="ProductoOpcionado">Producto seleccionado</label>
+                                                    <div class="select-wrapper"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-cb1ce985-7968-15ef-f147-c9c7618ebd82" value="..."><ul id="select-options-cb1ce985-7968-15ef-f147-c9c7618ebd82" class="dropdown-content select-dropdown "><li class=""><span>...</span></li><li class=""><span>Global Garantizada 360</span></li><li class=""><span>Global Garantizada 360 Semestres</span></li></ul><select name="ProductoOpcionado" onchange="javascript:setTimeout('__doPostBack(\'ProductoOpcionado\',\'\')', 0)" id="ProductoOpcionado" class="initialized">
+		<option selected="selected" value="-1">...</option>
+		<option value="135">Global Garantizada 360</option>
+		<option value="136">Global Garantizada 360 Semestres</option>
+
+	</select></div>
+                                                </div>
+                                                
+                                            
+</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div id="UpdatePanel16">
+	
+                                                <div class="input-field col l1 col-t-2 col-m-4 mg-top-25 mg-bottom-20">
+                                                    <a id="CalcularMaduracion" href="javascript:__doPostBack('CalcularMaduracion','')">Calcular</a>
+                                                </div>
+                                                <div class="input-field col l3 m4 s12">
+                                                    <input name="AnioMaduracionCalc" type="text" readonly="readonly" id="AnioMaduracionCalc" placeholder="">
+                                                    <label id="lblAnioMaduracionCalc" class="active" for="AnioMaduracionCalc">Año calculado de ingreso a la universidad</label>
+                                                </div>
+                                                
+                                                <div class="input-field col l3 m4 s12">
+                                                    <input name="AnioMaduracion" type="text" maxlength="4" id="AnioMaduracion" placeholder="">
+                                                    <label id="lblAnioMaduracion" class="active" for="AnioMaduracion">Confirme el año de ingreso a la universidad</label>
+                                                    
+                                                </div>
+                                            
+</div>
+
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l4 col-t-4 col-m-122">
+                                            <label class="active" for="tarifa">Tarifa</label>
+                                            <div class="select-wrapper"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-cb967a68-5871-f1f6-f790-1658ad1914fd" value="Septiembre de 2026"><ul id="select-options-cb967a68-5871-f1f6-f790-1658ad1914fd" class="dropdown-content select-dropdown "><li class=""><span>Septiembre de 2026</span></li></ul><select name="tarifa" id="tarifa" class="initialized">
+	<option value="01/09/2026">Septiembre de 2026</option>
+
+</select></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col col-s-12 col-t-12 col-m-12">
+                                            <div class="active texto gb-blue-text"><b>Observaciones:</b> Aclare el motivo si el año calculado es diferente al año de ingreso a la universidad que está confirmando.  En caso que el colegio permita matricular al niño al grado prekinder siendo menor de 4 años, ingrese en el campo confirmación el año de maduración e indique el motivo en las observaciones. </div>
+                                            <textarea name="Observaciones" rows="2" cols="20" id="Observaciones" class="mg-top-bottom-30" placeholder="" style="height:70px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 right-align">
+                                            <div class="gb-toolbar valign-wrapper mdl-color--grey-300">
+                                                <div id="UpdatePanelCot">
+	
+                                                        <input name="Cerrar" type="submit" id="Cerrar" value="Cerrar" class="btn red white-text text-normal left" onclick="return cerrarpagina();">
+                                                        <input type="submit" name="Cotizar" value="Cotizar" id="Cotizar" class="btn green white-text text-normal mg-right-10">
+                                                    
+</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </article>
+            </section>
+        </div>
+        <div id="UpdateProgress1" style="display:none;" role="status" aria-hidden="true">
+	
+                <div style="background-color: white; filter: alpha(opacity=40); opacity: 0.60; width: 100%; top: 0px; left: 0px; position: fixed; height: 100%; z-index: 100002 !important;">
+                </div>
+                <div class="card-panel white lighten-2" style="filter: alpha(opacity=100); opacity: 1; vertical-align: middle; top: 45%; position: fixed; right: 45%; z-index: 100002 !important;">
+                    <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+</div>
+        <a id="lkMensajeInformativo" href="javascript:__doPostBack('lkMensajeInformativo','')" style="display: none"></a>
+        
+        <div id="pnlMensajeInformativo" style="display: none; position: fixed; z-index: 100001;">
+	
+            <div id="UpdatePanel23">
+		
+                    <div class="row">
+                        <div class="col s12">
+                            <div id="divMensajes" class="alert info">
+                                <div class="row mg-5">
+                                    <br>
+                                </div>
+                                <div class="row mg-5 center-align">
+                                    <div class="col s12">
+                                        <input type="submit" name="CierraMensajeInformativo" value="Aceptar" id="CierraMensajeInformativo" class="btn blue darken-1 white-text text-darken-4 text-normal">
+                                        <input type="submit" name="CierreMensajeError" value="Aceptar" id="CierreMensajeError" class="btn red darken-1 white-text text-darken-4 text-normal" style="background-color:#F2DEDE;">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+	</div>
+        
+</div>
+
+        <a id="lkEvento" href="javascript:__doPostBack('lkEvento','')" style="display: none"></a>
+        
+        <div id="pnlEvento" style="display: none; position: fixed; z-index: 100001;">
+	
+            <div id="UpdatePanel7">
+		
+                    <div class="col s12">
+                        <div class="col s12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="row mg-1">
+                                        <div class="col s12 mg-top-10">
+                                            <input type="submit" name="btnCancelaEvento" value="X" id="btnCancelaEvento" class="card-close">
+                                        </div>
+                                    </div>
+                                    <div class="col s12">
+                                        <div class="wraper-table">
+                                            <div>
+
+		</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+	</div>
+        
+</div>
+
+
+        <a id="lkBeneficiarios" href="javascript:__doPostBack('lkBeneficiarios','')" style="display: none"></a>
+        
+        <div id="pnlBeneficiarios" style="width: 450px; display: none; position: fixed; z-index: 100001;">
+	
+            <div style="max-height: 450px; overflow: auto;">
+                <div id="UpdatePanel9">
+		
+                        <div class="col s12">
+                            <div class="col s12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="col s12">
+                                            <div class="wraper-table">
+                                                <div>
+
+		</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-action blue-grey lighten-5 center-align">
+                                        <input type="submit" name="NuevoBen" value="Nuevo" id="NuevoBen" class="btn blue darken-1 light-white-text text-darken-4 text-normal right-align">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+	</div>
+            </div>
+        
+</div>
+
+        <a id="lkColegios" href="javascript:__doPostBack('lkColegios','')" style="display: none"></a>
+        
+        <div id="pnlColegios" style="width: 450px; display: none; position: fixed; z-index: 100001;">
+	
+            <div style="max-height: 450px; overflow: auto;">
+                <div id="UpdatePanel12">
+		
+                        <div class="col s12">
+                            <div class="col s12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="row mg-1">
+                                            <div class="col s12 mg-top-10">
+                                                <input type="submit" name="CierraColegios" value="X" id="CierraColegios" class="card-close">
+                                            </div>
+                                        </div>
+                                        <div class="col s12">
+                                            <div class="wraper-table">
+                                                <div>
+
+		</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+	</div>
+            </div>
+        
+</div>
+
+        <input type="hidden" name="hUsuarioSalesForce" id="hUsuarioSalesForce" value="ncruzv_242@gsf.com">
+        <input type="hidden" name="hUltCot" id="hUltCot" value="0">
+        <input type="hidden" name="hSnEncuentraTarifa" id="hSnEncuentraTarifa" value="-1">
+        <input type="hidden" name="hOportunidad" id="hOportunidad">
+        <input type="hidden" name="hOperacion" id="hOperacion" value="1">
+        <input type="hidden" name="hValorPrima" id="hValorPrima">
+
+        <input type="hidden" name="hdfQsTipoAgente" id="hdfQsTipoAgente">
+        <input type="hidden" name="hdfQsCodAgente" id="hdfQsCodAgente">
+
+        <div id="UpdatePanel10">
+	
+                <input type="hidden" name="hEvento" id="hEvento">
+                <input type="hidden" name="hIndicadorBenef" id="hIndicadorBenef" value="0">
+                <input type="hidden" name="hCodColegio" id="hCodColegio">
+                <input type="hidden" name="hNombreColegio" id="hNombreColegio">
+                <input type="hidden" name="hCalendarioColegio" id="hCalendarioColegio" value="1">
+                <input type="hidden" name="hGradosColegio" id="hGradosColegio" value="0">
+                <input type="hidden" name="hIdPersona" id="hIdPersona" value="157523">
+                <input type="hidden" name="hfcod_agente" id="hfcod_agente" value="8080">
+                <input type="hidden" name="hfagente_prop" id="hfagente_prop" value="-1">
+            
+</div>
+    
+
+<script type="text/javascript">
+//<![CDATA[
+Sys.Extended.UI.Localization.SetLocale("es");Sys.Extended.UI.Localization.SetLocale("es");Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":2,"id":"DocTomador_Filter"}, null, null, $get("NroIdentificacion"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":13,"ValidChars":".ÑñÁÉÍÓÚáéíóúüÜ ","id":"NombreTomador_Filter"}, null, null, $get("NomTom"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":13,"ValidChars":".ÑñÁÉÍÓÚáéíóúüÜ ","id":"Apellido1Tomador_Filter"}, null, null, $get("ApeTom"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":13,"ValidChars":".ÑñÁÉÍÓÚáéíóúüÜ ","id":"Apellido2Tomador_Filter"}, null, null, $get("ApeTom2"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterMode":2,"FilterType":2,"InvalidChars":".+-*","id":"FilterFecNacTomador"}, null, null, $get("FecNacimientoTom"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":3,"ValidChars":"- ","id":"Celular_Filter"}, null, null, $get("Celular"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":2,"id":"DocumentoBenef1_Filter"}, null, null, $get("NroIdentificacionBen"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":13,"ValidChars":".ÑñÁÉÍÓÚáéíóúüÜ ","id":"NombreBenef1_Filter"}, null, null, $get("NomBen"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":13,"ValidChars":".ÑñÁÉÍÓÚáéíóúüÜ ","id":"Apellido1Benef1_Filter"}, null, null, $get("ApeBen"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":13,"ValidChars":".ÑñÁÉÍÓÚáéíóúüÜ ","id":"Apellido2Benef1_Filter"}, null, null, $get("ApeBen2"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterMode":2,"FilterType":2,"InvalidChars":".+-*","id":"FilteredTextBoxExtender1"}, null, null, $get("FecNacimientoBen"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.FilteredTextBoxBehavior, {"FilterType":2,"id":"ftb1"}, null, null, $get("AnioMaduracion"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.UI._UpdateProgress, {"associatedUpdatePanelId":null,"displayAfter":500,"dynamicLayout":true}, null, null, $get("UpdateProgress1"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlMensajeInformativo","dynamicServicePath":"/CotizadorEducativoEM/datoscotizacion.aspx","id":"mpeMensajeInformativo"}, null, null, $get("lkMensajeInformativo"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlEvento","dynamicServicePath":"/CotizadorEducativoEM/datoscotizacion.aspx","id":"mpeEvento"}, null, null, $get("lkEvento"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlBeneficiarios","dynamicServicePath":"/CotizadorEducativoEM/datoscotizacion.aspx","id":"mpeBeneficiarios"}, null, null, $get("lkBeneficiarios"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlColegios","dynamicServicePath":"/CotizadorEducativoEM/datoscotizacion.aspx","id":"mpeColegios"}, null, null, $get("lkColegios"));
+});
+//]]>
+</script>
+<div id="mpeMensajeInformativo_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div><div id="mpeEvento_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div><div id="mpeBeneficiarios_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div><div id="mpeColegios_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div></form>
+
+
+<div class="hiddendiv common"></div></body></html>

@@ -120,10 +120,11 @@ def step_impl_completar_formulario(context, tipo_doc_key):
 @when('el sistema debe confirmar que la grabación del nuevo cliente se realizó correctamente')
 @then('el sistema debe confirmar que la grabación del nuevo cliente se realizó correctamente')
 def step_impl_verificar_grabacion(context):
+    # Añadir un breve sleep o espera de invisibilidad del cargador si existe
+    time.sleep(2.0) 
     mensaje_capturado = context.pagina_busqueda.obtener_mensaje_exito_y_cerrar()
     assert "Grabación realizada correctamente" in mensaje_capturado, \
         f"Error de Negocio: Mensaje inesperado en pantalla: '{mensaje_capturado}'"
-    print(f"[QA Info] Guardado exitoso verificado para el nuevo cliente: {context.documento_random}")
 
 
 @when('el analista se desplaza hasta la sección "Opciones de Cotización" del nuevo flujo')
@@ -152,13 +153,38 @@ def step_impl_producto(context):
 def step_impl_cambiar_ventana(context):
     context.pagina_cotizacion.cambiar_a_ventana_cotizador()
     context.pagina_cotizacion.validar_pantalla_cotizador()
-
+    time.sleep(1)
 
 @when('diligencia la información requerida para la cotización')
-@then('diligencia la información requerida para la cotización')
 def step_impl_diligenciar_cotizacion(context):
-    context.pagina_cotizacion.seleccionar_apoyo_institucional()
-    context.pagina_cotizacion.seleccionar_evento()
+    # 1. Asegurar que estamos en la ventana correcta (la última abierta)
+    ventanas = context.driver.window_handles
+    if len(ventanas) > 1:
+        context.driver.switch_to.window(ventanas[-1])
+    
+    # 2. Solo buscar iframes dentro de esta ventana
+    iframes = context.driver.find_elements(By.TAG_NAME, "iframe")
+    if iframes:
+        context.driver.switch_to.frame(iframes[0])
+
+    # NUEVO: Asegurar visibilidad antes de interactuar
+    context.pagina_cotizacion.asegurar_seccion_beneficiario_visible()
+   
+    # Proceder con las acciones
+    # context.pagina_cotizacion.seleccionar_apoyo_institucional()
+    
+    # 2. Llamamos a nuestra nueva función para seleccionar el tipo de documento
+    context.pagina_cotizacion.seleccionar_tipo_documento_beneficiario("Registro Civil")
+    
+    # 3. Llenamos toda la información personal con el nuevo método aleatorio
+    context.pagina_cotizacion.diligenciar_datos_aleatorios_beneficiario()
+    # ... después de diligenciar datos aleatorios del beneficiario ...
+    context.pagina_cotizacion.diligenciar_datos_colegio(
+        departamento="DISTRITO CAPITAL",
+        institucion="COLEGIO NACIONAL ANDRES BELLO (Calendario A - 11 grados)",
+        curso="TERCERO"
+    )
+   
 
 
 @when('hace clic en el botón "Cotizar"')

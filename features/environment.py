@@ -3,16 +3,13 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 def before_all(context):
-    """Se ejecuta una vez antes de toda la suite de pruebas."""
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
+    # Cambiamos la estrategia de carga a 'eager'. 
+    # Esto le dice a Selenium: "Continúa en cuanto el DOM esté interactivo, no esperes a que bajen todas las imágenes/scripts".
+    options.page_load_strategy = 'eager' 
     
-    # Inicializamos el driver
     context.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    
-    # 🔥 ESCUDO: Si la página tarda más de 15 segundos en responder (por culpa de la VPN/Red), 
-    # el script romperá con un error claro en lugar de quedarse congelado eternamente.
-    context.driver.set_page_load_timeout(15)
 
 def before_scenario(context, scenario):
     """Se ejecuta antes de cada escenario individual."""

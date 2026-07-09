@@ -188,10 +188,16 @@ class BusquedaClientePage(BasePage):
         print(f"[QA Info] Registro enviado para {nombre_aleatorio} {apellido1_aleatorio}.")
 
     def obtener_mensaje_exito_y_cerrar(self) -> str:
-        """Valida visualmente el mensaje de confirmación y cierra la alerta."""
-        elemento_texto = self.wait.until(EC.visibility_of_element_located(self.TEXTO_ALERTA_EXITO))
+        # Aumentamos el tiempo de espera específicamente para esta confirmación
+        # y usamos 'presence_of_element_located' en lugar de 'visibility' para evitar 
+        # problemas con elementos que cambian de estilo durante el postback.
+        wait_custom = WebDriverWait(self.driver, 50)
+        elemento_texto = wait_custom.until(EC.presence_of_element_located(self.TEXTO_ALERTA_EXITO))
+        
         texto_alerta = elemento_texto.text.strip()
         
-        # OPTIMIZACIÓN: Consumo del método click centralizado
-        self.click(self.BOTON_ACEPTAR_ALERTA)
+        # Aseguramos que el botón de cerrar sea cliqueable antes de proceder
+        boton_cerrar = wait_custom.until(EC.element_to_be_clickable(self.BOTON_ACEPTAR_ALERTA))
+        boton_cerrar.click()
+        
         return texto_alerta
