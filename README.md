@@ -1,175 +1,134 @@
 # 🧪 Automatizaciones Global Seguros
 
-Repositorio de automatización de pruebas para el proyecto **Global Seguros**, utilizando buenas prácticas de control de versiones con Git y ejecución de pruebas automatizadas.
+Repositorio de automatización de pruebas para el proyecto **Global Seguros**, utilizando Python, Selenium y una arquitectura unificada BDD (Behavior-Driven Development) bajo el patrón POM (Page Object Model).
 
 ---
 
-## 🚀 Configuración del proyecto
+## 📋 Requisitos Previos
 
-### 1. Inicializar repositorio Git
-
-```bash
-git init
-```
+Antes de comenzar, asegúrate de tener instalado lo siguiente en tu máquina:
+* **Python 3.10 o superior**
+* **Google Chrome** (Navegador donde se ejecutan las pruebas)
+* **Visual Studio Code** (Opcional, para desarrollo)
 
 ---
 
-### 2. Clonar el repositorio
+## 🚀 Configuración Inicial
 
-Clonar el proyecto desde GitHub:
+Sigue estos pasos para preparar el entorno en tu máquina local:
+
+### 1. Clonar y abrir el proyecto
 
 ```bash
+# Clonar el proyecto desde GitHub
 git clone https://github.com/adrianamarcelaorozco/automatizaciones_GlobalSeguros.git
+
+# Entrar a la carpeta del proyecto
+cd automatizaciones_GlobalSeguros
+```
+
+* Abre Visual Studio Code, selecciona **Open Folder** y carga esta carpeta.
+
+### 2. Configurar el Entorno Virtual (venv)
+
+```bash
+# Crear el entorno virtual
+python3 -m venv venv
+
+# Activar el entorno virtual en macOS / Linux
+source venv/bin/activate
+```
+
+*(Cuando esté activo, verás un (venv) al principio de tu línea de comandos en la terminal).*
+
+### 3. Instalar Dependencias
+
+```bash
+pip install -r requirements.txt
 ```
 
 ---
 
-### 3. Conectar con repositorio remoto
+## 🧪 Ejecución de Pruebas (BDD)
 
-En caso de no estar vinculado:
+> ⚠️ **Nota de Red:** Recuerda que para ejecutar las pruebas sobre el Portal corporativo es obligatorio tener la **VPN empresarial activa**, de lo contrario los entornos privados no responderán.
+
+Asegúrate de tener el entorno virtual activo y ejecuta tus escenarios con:
 
 ```bash
-git remote add origin https://github.com/adrianamarcelaorozco/automatizaciones_GlobalSeguros.git
+# Ejecutar todas las pruebas BDD con Behave
+behave
 ```
 
-Validar conexión:
+### Opciones de ejecución útiles:
 
 ```bash
-git remote -v
-```
+# Ejecutar una característica o feature específica
+behave features/tu_archivo.feature
 
----
-
-### 4. Abrir el proyecto
-
-* Abrir Visual Studio Code
-* Seleccionar **Open Folder**
-* Cargar la carpeta del proyecto clonado
-
----
-
-## 🧪 Ejecución de pruebas
-
-Ejecutar pruebas automatizadas con pytest:
-
-```bash
-pytest tests/test_consulta.py
+# Ver la salida detallada de los pasos de prueba
+behave --no-capture
 ```
 
 ---
 
-## 🔧 Comandos básicos de Git
+## 📂 Estructura del Proyecto
 
-### Ver estado del repositorio
+```text
+/features
+  ├── *.feature          # Escenarios de prueba en lenguaje Gherkin
+  └── /steps             # Implementación de los pasos en Python
+/pages                   # Mapa del sitio (Page Object Model - Localizadores y Acciones)
+├── environment.py       # Configuración de Hooks de Behave (WebDriver, Red, Timeouts)
+├── requirements.txt     # Herramientas y librerías externas del proyecto
+└── README.md            # Documentación del repositorio
+```
+
+---
+
+## 🔧 Comandos Básicos de Git
+
+### Flujo de trabajo diario
 
 ```bash
+# Ver estado actual del repositorio
 git status
-```
 
-### Agregar cambios
-
-```bash
+# Agregar cambios al área de preparación
 git add .
+
+# Crear commit con tus cambios
+git commit -m "feat: descripción clara del avance en QA"
+
+# Subir cambios a tu rama de trabajo
+git push origin tu_rama
 ```
 
-### Crear commit
+### 🧹 Limpieza de ramas antiguas (Post-Merge)
+Cuando una rama ya se fusionó en la nube y quieras limpiar tu entorno local:
 
 ```bash
-git commit -m "Descripción de los cambios"
-```
+# 1. Regresar a la rama principal
+git checkout main
 
-### Subir cambios al repositorio
+# 2. Traer cambios y limpiar el historial de ramas borradas en la nube
+git pull --prune
 
-```bash
-git push origin main
-```
-
-### Traer cambios del repositorio
-
-```bash
-git pull origin main
+# 3. Borrar la rama local de forma segura
+git branch -d nombre_de_tu_rama
 ```
 
 ---
 
 ## 📌 Buenas prácticas QA
 
-* Mantener commits claros y descriptivos
-* Ejecutar pruebas antes de subir cambios
-* Trabajar con ramas cuando sea necesario (`feature`, `bugfix`)
-* Validar que los tests pasen correctamente antes de hacer push
-
----
-
-## 📁 Estructura básica del proyecto
-
-```
-/tests
-  └── test_consulta.py
-```
+* Mantener los archivos .feature legibles y separados por responsabilidades de negocio.
+* No duplicar la lógica de los localizadores; centralizarlos siempre dentro de la capa /pages.
+* Asegurar commits descriptivos siguiendo estándares limpios (feat:, fix:, refactor:).
+* Trabajar con ramas ordenadas para cada flujo o corrección.
 
 ---
 
 ## 👩‍💻 Autor
 
-Proyecto desarrollado por Adriana Orozco como parte de automatización QA.
-
----
-
-
-## 🛠️ Proyecto de Automatización - GlobalSeguros
-Este proyecto contiene pruebas automatizadas para el Portal EM, desarrolladas con Python y Selenium. Está diseñado bajo el patrón de diseño POM (Page Object Model) para garantizar que sea fácil de mantener y escalar.
-
-## 📋 Requisitos Previos
-Antes de comenzar, asegúrate de tener instalado lo siguiente en tu computador:
-
-Python 3.10 o superior: Descargar aquí (Al instalar, marca la casilla "Add Python to PATH").
-
-Google Chrome: Las pruebas se ejecutan en este navegador.
-
-Visual Studio Code (Opcional): Para visualizar el código.
-
-## 🚀 Configuración Inicial
-Sigue estos pasos para preparar el entorno en tu máquina local:
-
-Abrir una terminal en la carpeta del proyecto.
-
-Crear un entorno virtual (para no afectar otros programas):
-
-PowerShell
-python -m venv venv
-Activar el entorno virtual:
-
-En Windows: .\venv\Scripts\activate
-
-Instalar las librerías necesarias:
-
-PowerShell
-pip install -r requirements.txt
-
-## 📂 Estructura del Proyecto
-Para entender cómo está organizado el código:
-
-pages/: Contiene el "mapa" del sitio web. Aquí se definen los botones y campos de texto de cada página.
-
-test/: Contiene las pruebas reales (los pasos que Selenium seguirá).
-
-conftest.py: Configuración del navegador (Chrome).
-
-pytest.ini: Configuración técnica para que las pruebas se ejecuten correctamente.
-
-requirements.txt: Lista de herramientas externas que el proyecto necesita.
-
-## 🧪 Cómo Ejecutar las Pruebas
-Una vez configurado el entorno, ejecutar las pruebas es muy sencillo:
-
-Asegúrate de tener el entorno virtual activo (verás un (venv) al principio de tu línea de comandos).
-
-Escribe el siguiente comando y presiona Enter:
-
-PowerShell
-pytest
-Opciones de ejecución:
-Si quieres ver el detalle paso a paso en la terminal: pytest -v -s
-
-Las pruebas abrirán una ventana de Chrome automáticamente y realizarán las acciones programadas.
+Proyecto desarrollado por Adriana Orozco como parte de la estrategia de automatización QA de Global Seguros.
