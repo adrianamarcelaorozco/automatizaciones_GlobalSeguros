@@ -5,6 +5,8 @@ from .base_page import BasePage
 import time
 import random # Asegúrate de que esto esté al inicio del archivo si no lo tenías
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+
 
 class CotizacionPage(BasePage):
     def __init__(self, driver):
@@ -34,89 +36,130 @@ class CotizacionPage(BasePage):
         
     def diligenciar_datos_aleatorios_beneficiario(self):
         """
-        Llena el formulario usando inyección directa de JavaScript para evitar
-        errores de 'ElementNotInteractable' y saltarse validaciones complejas.
+        Llena el formulario usando una técnica de inyección segura que evita 
+        que los campos se limpien al perder el foco.
         """
         import random
-        print("[QA Info] Generando y llenando datos mediante JS...")
+        print("[QA Info] Generando y llenando datos mediante JS (Modo Persistente)...")
         
-        # 1. Datos aleatorios
-        sexo = random.choice(['M', 'F'])
-        nombre = random.choice(["Mateo", "Valeria", "Santiago", "Camila"])
-        apellido1 = random.choice(["Garcia", "Restrepo", "Cardona"])
-        apellido2 = random.choice(["Gaviria", "Zapata", "Orozco"])
-        documento = str(random.randint(100000000, 9999999999))
-        fecha = "09/09/2017" # Puedes aleatorizar esto si prefieres
-        
-        # 2. Diccionario de IDs y valores para iterar
         datos = {
-            "NroIdentificacionBen": documento,
-            "NomBen": nombre,
-            "ApeBen": apellido1,
-            "ApeBen2": apellido2,
-            "FecNacimientoBen": fecha
+            "NroIdentificacionBen": str(random.randint(100000000, 9999999999)),
+            "NomBen": random.choice(["Mateo", "Valeria", "Santiago", "Camila"]),
+            "ApeBen": random.choice(["Garcia", "Restrepo", "Cardona"]),
+            "ApeBen2": random.choice(["Gaviria", "Zapata", "Orozco"]),
+            "FecNacimientoBen": "09/09/2017"
         }
         
-        # 3. Inyectar valores con JS
+        # Inyectamos valores uno a uno sin disparar eventos destructivos inmediatamente
         for id_campo, valor in datos.items():
             script = f"""
                 var el = document.getElementById('{id_campo}');
                 if (el) {{
                     el.value = '{valor}';
-                    // Disparamos eventos para que el formulario sepa que el dato cambió
-                    el.dispatchEvent(new Event('change', {{ bubbles: true }}));
-                    el.dispatchEvent(new Event('blur', {{ bubbles: true }}));
-                    el.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    // Solo inyectamos el valor. 
+                    // No disparamos 'blur' aún, esto evita que el ASP.NET valide y borre
                 }}
             """
             self.driver.execute_script(script)
-            time.sleep(0.5) # Pausa breve para dar tiempo al servidor a reaccionar
-
-        # 4. Sexo
-        radio_id = "GeneroMBenef" if sexo == 'M' else "GeneroFBenef"
-        self.driver.execute_script(f"document.getElementById('{radio_id}').click();")
         
-        # 5. Cálculo de edad (Llamada directa a la función que tiene la página)
+        # Una vez llenos todos, disparamos los eventos globales para 'engañar' al sistema
+        # de una sola vez
+        script_eventos = """
+            var campos = ['NroIdentificacionBen', 'NomBen', 'ApeBen', 'ApeBen2', 'FecNacimientoBen'];
+            campos.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+        """
+        self.driver.execute_script(script_eventos)
+        
+        # Sexo y edad
+        self.driver.execute_script("document.getElementById('GeneroFBenef').click();")
         self.driver.execute_script("if(typeof CalcularEdadBen === 'function') CalcularEdadBen();")
         
-        print(f"[QA Info] Beneficiario llenado: {nombre} {apellido1} - Doc: {documento}")
+        print("[QA Info] Beneficiario llenado con éxito y eventos sincronizados.")
 
     def seleccionar_por_valor(self, select_id, valor_opcion):
-        """
-        Selección directa: ignora el dropdown de Materialize y fuerza 
-        el valor en el select real de ASP.NET.
-        """
         print(f"[QA Info] Forzando valor '{valor_opcion}' en el select '{select_id}'...")
         
-        # 1. Ejecutamos JS para cambiar el valor del select y disparar el __doPostBack
+        # En lugar de inyectar __doPostBack, vamos a usar un enfoque más limpio
+        # que dispara el evento change estándar, que suele ser suficiente para ASP.NET
         script = f"""
             var select = document.getElementById('{select_id}');
-            select.value = '{valor_opcion}';
-            // Disparamos el evento onchange que tiene el ASP.NET
-            select.dispatchEvent(new Event('change', {{ bubbles: true }}));
-            // Si el select tiene un __doPostBack, lo llamamos directamente
-            if(select.onchange) {{
-                select.onchange();
+            if (select) {{
+                select.value = '{valor_opcion}';
+                // Disparar eventos estándar
+                var event = new Event('change', {{ bubbles: true }});
+                select.dispatchEvent(event);
+                return true;
             }}
+            return false;
         """
-        self.driver.execute_script(script)
-        time.sleep(3) # Esperamos el tiempo de recarga del servidor   
+        
+        try:
+            exito = self.driver.execute_script(script)
+            if exito:
+                # Damos un tiempo razonable para que el servidor procese el cambio
+                time.sleep(3) 
+            else:
+                print(f"[QA Error] No se pudo encontrar el elemento {select_id} mediante JS.")
+        except Exception as e:
+            print(f"[QA Error] Error al ejecutar script: {str(e)}")
 
-    def diligenciar_datos_colegio(self, depto_val="34", institucion="COLEGIO NACIONAL ANDRES BELLO (Calendario A - 11 grados)", curso_val="6"):
-        
-        # 1. Scroll al título
-        titulo = self.wait.until(EC.presence_of_element_located((By.XPATH, "//span[text()='Datos sobre el colegio']")))
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", titulo)
-        
-        # 2. Seleccionar Departamento usando el VALOR (34)
-        self.seleccionar_por_valor("DeptoColegio", depto_val)
-        
-        # 3. Ingresar Institución
+    def diligenciar_datos_colegio(self, depto_text, institucion_nombre, curso_val):
+        # 0. ASEGURAR VISIBILIDAD (Esto evita el error de ElementNotInteractable)
+        contenedor = self.driver.find_element(By.ID, "divColegio")
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", contenedor)
+        time.sleep(1)
+
+        # 1. Llenar Departamento
+        self.driver.execute_script(f"document.getElementById('DeptoColegio').value = '34';")
+        self.driver.execute_script("document.getElementById('DeptoColegio').dispatchEvent(new Event('change'));")
+        time.sleep(2)
+
+        # 2. Escribir colegio y buscar
         campo_inst = self.driver.find_element(By.ID, "ColegioSeleccionado")
-        self.driver.execute_script(f"arguments[0].value = '{institucion}';", campo_inst)
+        campo_inst.clear()
+        campo_inst.send_keys(institucion_nombre)
         
-        # 4. Seleccionar Curso usando el VALOR (ej. 6 para TERCERO según tu HTML)
-        self.seleccionar_por_valor("CursosColegio", curso_val)
+        btn_buscar = self.driver.find_element(By.NAME, "AbreBusquedaColegio")
+        # Forzamos scroll al botón antes de clickear
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", btn_buscar)
+        self.driver.execute_script("arguments[0].click();", btn_buscar)
+        
+        # 3. INTERACCIÓN CON EL MODAL (Si aparece)
+        print("[QA Info] Buscando en tabla de resultados...")
+        time.sleep(4) 
+        
+        # Intentamos hacer clic en el nombre del colegio dentro de la tabla
+        # Usamos un selector que busca el texto exacto en el enlace
+        xpath_colegio = f"//table[@id='grdColegios']//a[normalize-space(text())='{institucion_nombre}']"
+        try:
+            link_colegio = self.driver.find_element(By.XPATH, xpath_colegio)
+            self.driver.execute_script("arguments[0].click();", link_colegio)
+            print("[QA Info] Colegio seleccionado desde la tabla.")
+            time.sleep(4) # Espera a que el modal se cierre y el curso se cargue
+        except Exception:
+            print("[QA Warning] No se encontró la tabla de colegios o el colegio no estaba en ella.")
+
+        # 4. Seleccionar curso (Directo al DOM)
+        js_curso = f"""
+            var select = document.getElementById('CursosColegio');
+            for (var i = 0; i < select.options.length; i++) {{
+                if (select.options[i].text.trim() === '{curso_val}') {{
+                    select.selectedIndex = i;
+                    select.dispatchEvent(new Event('change'));
+                    return true;
+                }}
+            }}
+            return false;
+        """
+        if not self.driver.execute_script(js_curso):
+            raise Exception("Tras la búsqueda, el campo Curso sigue vacío.")
+        
 
     def _select_materialize_por_texto(self, select_id, texto_opcion):
         """

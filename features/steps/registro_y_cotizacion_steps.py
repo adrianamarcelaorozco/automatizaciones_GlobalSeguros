@@ -178,14 +178,12 @@ def step_impl_diligenciar_cotizacion(context):
     
     # 3. Llenamos toda la información personal con el nuevo método aleatorio
     context.pagina_cotizacion.diligenciar_datos_aleatorios_beneficiario()
-    # ... después de diligenciar datos aleatorios del beneficiario ...
     context.pagina_cotizacion.diligenciar_datos_colegio(
-        departamento="DISTRITO CAPITAL",
-        institucion="COLEGIO NACIONAL ANDRES BELLO (Calendario A - 11 grados)",
-        curso="TERCERO"
+        depto_text="DISTRITO CAPITAL",
+        institucion_nombre="COLEGIO NACIONAL ANDRES BELLO",
+        curso_val="TERCERO"
     )
-   
-
+    
 
 @when('hace clic en el botón "Cotizar"')
 @then('hace clic en el botón "Cotizar"')
