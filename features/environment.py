@@ -32,3 +32,4 @@ def after_scenario(context, scenario):
             context.driver.save_screenshot(f"fail_{scenario.name}.png")
         except Exception:
             pass
+

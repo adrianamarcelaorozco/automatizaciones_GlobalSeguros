@@ -6,6 +6,7 @@ import time
 import random # Asegúrate de que esto esté al inicio del archivo si no lo tenías
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class CotizacionPage(BasePage):
@@ -14,24 +15,41 @@ class CotizacionPage(BasePage):
         self.BTN_COTIZAR = (By.ID, "btnCotizar")
     
     def obtener_resultado_cotizacion(self):
-        """
-        Espera a que aparezca el resultado de la cotización y devuelve el texto.
-        Ajusta el ID según lo que aparezca en tu debug_boton_cotizar.html
-        """
-        print("[QA Info] Esperando a que el sistema muestre el número de cotización...")
+        print("[QA Info] Esperando a que el sistema muestre el resultado...")
         
-        # Intentamos buscar el mensaje de éxito o el número de cotización
-        # Ajusta este locator si el ID es diferente (ej. lblNumeroCotizacion)
-        locator_resultado = (By.XPATH, "//*[contains(text(), 'Cotización') or contains(@id, 'NumeroCotizacion')]")
-        
+        # Ampliamos la búsqueda: buscamos mensajes de error o de éxito
+        # A veces el sistema lanza un 'alert' o un 'modal' en lugar de un texto en pantalla
         try:
-            # Esperamos hasta 20 segundos a que la pantalla final cargue
-            wait_largo = WebDriverWait(self.driver, 20)
-            elemento = wait_largo.until(EC.visibility_of_element_located(locator_resultado))
-            print(f"[QA Info] ¡Cotización generada! Resultado: {elemento.text}")
-            return elemento.text
-        except Exception:
-            print("[QA Error] No se pudo encontrar el mensaje de confirmación de cotización.")
+            # Espera 30 segundos
+            wait_largo = WebDriverWait(self.driver, 30)
+            
+            # Buscamos elementos comunes de confirmación
+            # ID común en ASP.NET: 'lblNumeroCotizacion', 'divMensajeExito', etc.
+            # Usamos un selector que busque en todo el cuerpo del documento
+            locators = [
+                (By.XPATH, "//div[contains(@class, 'success')]"),
+                (By.XPATH, "//*[contains(text(), 'Cotización generada')]"),
+                (By.XPATH, "//*[contains(text(), 'Número de cotización')]"),
+                (By.ID, "lblNumeroCotizacion")
+            ]
+            
+            for locator in locators:
+                try:
+                    elemento = wait_largo.until(EC.visibility_of_element_located(locator))
+                    print(f"[QA Info] Resultado encontrado: {elemento.text}")
+                    return elemento.text
+                except:
+                    continue
+            
+            # Si llegamos aquí, no encontramos nada. Guardamos el HTML para investigar
+            html_final = self.driver.page_source
+            with open("debug_resultado_final.html", "w", encoding="utf-8") as f:
+                f.write(html_final)
+            print("[QA Error] No se encontró mensaje de éxito. Guardado en 'debug_resultado_final.html'")
+            return None
+
+        except Exception as e:
+            print(f"[QA Error] Excepción al buscar resultado: {e}")
             return None
         
     def diligenciar_datos_aleatorios_beneficiario(self):
@@ -367,4 +385,113 @@ class CotizacionPage(BasePage):
             print(f"[QA Error] No se pudo seleccionar el documento del beneficiario: {e}")
             raise
     
+    def seleccionar_producto_materialize(self, texto_producto="Global Garantizada 360"):
+        print(f"[QA Info] Forzando selección de producto vía JS: {texto_producto}")
+        
+        # Este script hace todo el trabajo: busca el select, abre el menú y selecciona el item
+        # Todo ocurre dentro del contexto del navegador, sin "tocar" el elemento desde fuera
+        script_js = f"""
+            try {{
+                var select = document.getElementById('ProductoOpcionado');
+                // 1. Forzamos el valor del select original
+                for (var i = 0; i < select.options.length; i++) {{
+                    if (select.options[i].text.trim() === '{texto_producto}') {{
+                        select.selectedIndex = i;
+                        break;
+                    }}
+                }}
+                // 2. Disparamos los eventos que Materialize y ASP.NET esperan
+                select.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                
+                // 3. Opcional: intentamos actualizar la UI visual de Materialize
+                var input = select.previousElementSibling;
+                if (input) {{
+                    input.value = '{texto_producto}';
+                    input.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                }}
+                return true;
+            }} catch(e) {{
+                return false;
+            }}
+        """
+        
+        exito = self.driver.execute_script(script_js)
+        
+        if exito:
+            print(f"[QA Info] Producto '{texto_producto}' seleccionado y eventos disparados con éxito.")
+            time.sleep(2) # Espera post-selección para que el servidor procese el cambio
+        else:
+            raise Exception(f"Fallo al seleccionar '{texto_producto}' mediante inyección JS.")
+        
+    def calcular_y_confirmar_anio_ingreso(self):
+        print("[QA Info] Iniciando cálculo de maduración...")
+        
+        # 1. Clic en el botón Calcular
+        btn_calcular = self.wait.until(EC.element_to_be_clickable((By.ID, "CalcularMaduracion")))
+        self.driver.execute_script("arguments[0].click();", btn_calcular)
+        
+        # 2. Espera inteligente: Esperamos a que el campo calculado tenga un valor (distinto de vacío)
+        # Esto es vital para asegurar que el PostBack terminó
+        def campo_calculado_tiene_valor(driver):
+            val = driver.find_element(By.ID, "AnioMaduracionCalc").get_attribute("value")
+            return val and val.strip() != ""
+        
+        self.wait.until(campo_calculado_tiene_valor)
+        
+        # 3. Obtener el valor calculado
+        anio_calculado = self.driver.find_element(By.ID, "AnioMaduracionCalc").get_attribute("value")
+        print(f"[QA Info] Año calculado obtenido: {anio_calculado}")
+        
+        # 4. Inyectar el valor en el campo de confirmación
+        campo_confirmacion = self.driver.find_element(By.ID, "AnioMaduracion")
+        self.driver.execute_script(f"arguments[0].value = '{anio_calculado}';", campo_confirmacion)
+        
+        # 5. Disparar eventos para que el formulario valide la igualdad
+        self.driver.execute_script("""
+            var el = document.getElementById('AnioMaduracion');
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            el.dispatchEvent(new Event('blur', { bubbles: true }));
+        """)
+        print("[QA Info] Año de ingreso confirmado correctamente.")
+
     
+    def cerrar_cotizacion(self):
+        print("[QA Info] Cerrando ventana de cotización...")
+        
+        # 1. Localizar el botón Cerrar
+        btn_cerrar = self.wait.until(EC.element_to_be_clickable((By.ID, "Cerrar")))
+        
+        # 2. Obtener el 'handle' de la ventana principal para volver después
+        ventana_principal = self.driver.window_handles[0]
+        
+        # 3. Clic mediante JS para ejecutar el 'cerrarpagina()' nativo
+        self.driver.execute_script("arguments[0].click();", btn_cerrar)
+        
+        # 4. Sincronización: Esperar a que la ventana de cotización se cierre
+        # Cambiamos el foco a la ventana principal
+        self.wait.until(EC.number_of_windows_to_be(1))
+        self.driver.switch_to.window(ventana_principal)
+        
+        print("[QA Info] Ventana de cotización cerrada. Foco regresado a la ventana principal.")
+
+    def seleccionar_cobertura_y_continuar(driver):
+        wait = WebDriverWait(driver, 15)
+        
+        # 1. Esperar a que el modal y el checkbox estén presentes en el DOM
+        # Usamos el ID del primer checkbox de la tabla
+        checkbox_id = "gvCoberturasCampleto_chkSeleccionar_0"
+        checkbox = wait.until(EC.presence_of_element_located((By.ID, checkbox_id)))
+        
+        # 2. Hacer clic usando JavaScript. 
+        # Esto evita el clásico error "Element is not clickable at point" en modales superpuestos.
+        driver.execute_script("arguments[0].click();", checkbox)
+        
+        # 3. ¡Paso crítico! Esperar a que el UpdatePanel termine su PostBack.
+        # Si la página tiene un spinner o loader, espera a que desaparezca. 
+        # Si no, un sleep corto es el "mal necesario" en WebForms antiguos.
+        time.sleep(2) 
+        
+        # 4. Esperar y hacer clic en el botón Continuar
+        btn_continuar = wait.until(EC.element_to_be_clickable((Bys.ID, "MuestraCotizacion")))
+        driver.execute_script("arguments[0].click();", btn_continuar)

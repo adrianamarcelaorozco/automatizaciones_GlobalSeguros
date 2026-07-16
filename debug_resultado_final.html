@@ -1,0 +1,559 @@
+<html lang="es"><head><style type="text/css" id="alertifyCSS">/* style.css */</style><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"><link rel="icon" type="image/png" href="images/favicon.ico"><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"><link rel="stylesheet" href="libs/Font-Awesome/css/font-awesome.min.css"><link rel="stylesheet" href="libs/materialize/dist/css/materialize.min.css"><link rel="stylesheet" href="libs/alertifyjs/dist/css/alertify.css"><link rel="stylesheet" href="libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css"><link rel="stylesheet" href="libs/DataTables/media/css/jquery.dataTables.min.css"><link rel="stylesheet" href="libs/DataTables/media/css/material-design-lite.min.css"><link rel="stylesheet" href="styles/global-framework.css">
+    <style>
+        .select-dropdown {
+            overflow-y: auto !important;
+        }
+
+        #UpdatePanelCot {
+            width: 100%;
+        }
+
+        .autoWidth {
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+    </style>
+    <title>
+	Seguro Educativo
+</title>
+    <script src="libs/jquery/dist/jquery.min.js"></script>
+    <script src="libs/alertifyjs/src/js/alertify.js"></script>
+    <script src="libs/object-fit-images/dist/ofi.browser.js"></script>
+    <script src="libs/picturefill/dist/picturefill.min.js"></script>
+    <script src="libs/materialize/dist/js/materialize.min.js"></script>
+    <script type="text/javascript">
+
+        function cerrarpagina() {
+
+            window.close();
+            return false;
+
+        }
+
+    </script>
+
+
+<link href="/CotizadorEducativoEM/WebResource.axd?d=hcXDZhXiidgsQUtEo5iT33h4y0T3aU-VdlKO7fZjsnfVvzxv02xaTm58khyj4aswsOzHhVNJ0CfJtR91pMgBvCpHtTrdJJaa3JqTFimWVanWeIOcwLrz-OXPFqQhJYzTwhilbM19GvgyBKZRdTnMzdC1EFCK96eoNIpt55SZPF01&amp;t=637522801010986910" type="text/css" rel="stylesheet"></head>
+
+<body class="overflow-auto">
+    <form method="post" action="./resumen.aspx?op=1&amp;nc=371577&amp;em=-1" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" tabindex="-1">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" tabindex="-1">
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" tabindex="-1">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" tabindex="-1">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/CotizadorEducativoEM/WebResource.axd?d=pynGkmcFUV13He1Qd6_TZLf3RtNe9-3Jl8LMF-kWmtF-upTjzfbfTihlx9s9uByrdcTd71fZN1iQJUjTj2cstw2&amp;t=638883092380000000" type="text/javascript"></script>
+
+
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=NJmAwtEo3Ipnlaxl6CMhvkuaX8PYlAjSMEmz6oqrQM6pKg2FqZvsJofw7moZ6BdcRcdooLWE4Jc-V6Eyg0WoBbK6MzvOzkaykiXKiwljOIs4OqnI6jEv8V0zX5ekVCOFgiAFd2Cr-_XVsflLjceFdH22eNEBKR-1k84GIs5TmYA1&amp;t=74a40145" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=dwY9oWetJoJoVpgL6Zq8OE_uIyurC2stAXGLdO_EaPDcziBWGu6U582CbafDZ1dKsXAj0QudL0djDno-FAuaEC3wUBbmYnhOmfSma08Pjte10yeSnWAN9pufUawsdvNCqMlBUxClFJ5Z206I2DqyPe1WDH8jH3sHI1QjLvcvIew1&amp;t=74a40145" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=eE6V8nDbUVn0gtG6hKNX_GbNdySM62bEy9fTaqybVfk9Pqe7dO_XOuDp4iaHCdkmYonkHwFDShN7xt9rWrUejQOUSbJGgqBFegbBxqFMPFE3UjxziW2Cv0Ub_xSSj45A0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=r7Burr0wQuBhUAFjce8_0_Ymhj-ydamB_hQ2emceXrxyy_rtKRMAmSvdgy3iHNkpmqfcL_aFF0w-1b-A2B6ZNk61RODm1G0CsXcmN2N42_FSSBLBJ4V42B-Ynn0K0DENN6h6INSBAojBoisWiG-9Vg2&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=jwf4VSQi7LeShc44FJ-gAQsjL374nhYmoV0lBpkCUPUusqXyVKcWzoFN95x9VBonnoiilxIeupwtpiQQIcMwktVojgyUhRFGldF4_Tjo7uzLCvtbXJmq6b7Dypa-KyGA0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=mcAASOSteirJeuV-3by3Udg2EMJbbRHrYouVPN7ec3MgNozdctOibU2rmUEctAk79l16p5FDs_W9z1Yw2vNTzyLecEvl_mLc0aGCwURhCJg1&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=nai7mGcYyE2dix_TwveLDQj03mD4UoZ9A9bEfHrsFlfBPw_98yK6n5_wh1Vo_vQTyHUGfmMWI_RPDS4Ifx6rja-D1r0lIeyug61HNTnlG6btLsqb9l-mew4zD8qqfg0r0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=LQ1q2RBSthBAZhliMjtG_7hE0_jceExgNXIKwzMbr8SOLm4S9IChihS-B-Z5eRya7c6wpt4rzB816rkRWC5YZ38IiucLDPsTnEJP79WqK7WEh5VyBGPgFAEOMExW2rrS0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=HEFpVKbnoeQjkjHkFKu3MJfnx7g1BReDqqZw8ElmlvSo9w1PY1DfmPVGwRdkLRiNzj6iVo6L32bqCJAqlUbHyLSuzM2kHeCILaw2ov66gMqRPrMBKBa8OO74i1rWPZVx0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=VOYD8Xe7kQA0lniBYXVpAuHubKWECy9gKXe9SrARamSV6X-JkZHXPyvFYS33Fmtn8saUxpEo024o1GPkHyebWAmUk63JETSjjTHU9udavek_s7pnJEseheoCaOqbbPzY0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=iON9Jxe8QCRam1nkdNLgkQgJI76wGCF9BRGXVhL3G_LOx5A1gdN7oMWORIHuKplnG_mzawKlV-8J1kHCsd1FIaGdmyXbrtfWxt-hhchx81SD5B7aU7eZiMv4Ea-mqiD-0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=xGmPTKfsNy0_1Sr5I58kO15mBRfrg3YmLwHgDi4dxhX0RI-EO1TLOVPO39P9yIbiLnF6xFAtVnQBsOxqRq4WLUAeFEC7tzegoksIW7jNg4ncySCeJ1yNlhjSgibY48yV0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=yDT7ulzE00Yqzs5zd38bJ0k9dkbWVyw7qftzDaf6334wcjPQ7ZKrCaSnEp6d5h2vxLy6a8rks3rp8knhxSmHV3Y8Qg5_2ETSfPQJ2TZX2cr3OveEPFbScniepxCsIND80&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=5ib3lCcyinHeLQmkwMF7Eg7b8d2iYx3GvM6YKH3eqft3cXFDAoJ_quHBA623LOvA0KnDW9a7F__e8upj43-bTWaL8urs_iIQihHfyOQIfSonL9rXjjyPCU4um9IrEZnj0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=hOeJu0xhC-uW6Gf8ooKdXrwkAubCgY9zudr6kRwCNzJevh_Ww-btItWwG650OLF4TrWfbgbXi3T9YZQt_wZfBeR1rp3UK7WSLoC335trkRX2d9ApNCdO117xuTNPhJ5u0&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<script src="/CotizadorEducativoEM/ScriptResource.axd?d=XlV9GqTk6b5uqDuL38kZ4IhmYL6EUc3R-DKol77LLBBhtrNHVMShICjR7UES3DoB8g2ScCcg8pGPLtvMf1J4SMLuTztx0_iIOozy4o_VM7Z2Nmge0r912II1oa1F7q290&amp;t=fffffffff65665cf" type="text/javascript"></script>
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="C76E0E08" tabindex="-1">
+	<input type="hidden" name="__SCROLLPOSITIONX" id="__SCROLLPOSITIONX" value="0" tabindex="-1">
+	<input type="hidden" name="__SCROLLPOSITIONY" id="__SCROLLPOSITIONY" value="0" tabindex="-1">
+	<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" tabindex="-1">
+</div>
+        <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ScriptManager1', 'form1', ['tUpdatePanel2','UpdatePanel2','tUpdatePanel1','UpdatePanel1','tUpdatePanel3','UpdatePanel3','tUpdatePanel4','UpdatePanel4','tUpdatePanel5','UpdatePanel5','tUPanelModular','UPanelModular','tUpdatePanelCot','UpdatePanelCot','tUpdatePanel17','UpdatePanel17','tUpdatePanel7','UpdatePanel7','tUpdatePanel23','UpdatePanel23','tUpdatePaneTipoTomador','UpdatePaneTipoTomador','tUpdatePanel12','UpdatePanel12'], [], [], 90, '');
+//]]>
+</script>
+
+        <div class="wrapper">
+            <section class="layout fit-screen">
+                <article class="overflow-hidden display-flex min-width-300">
+                    <aside class="outlet s12">
+                        <header>
+                            <div class="row no-mg-bottom">
+                                <div class="col col-s-8 col-t-12 col-m-12 no-pd no-mg">
+                                    <span class="logo"></span>
+                                </div>
+                                <div class="col col-s-4 col-t-12 col-m-12">
+                                    <img class="mg-20" src="images/user.png">
+                                    <span id="MensajeBienvenida">CRUZ NORIS DEL SOCORRO NORIS DEL SOCORRO</span>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="row mg-top-15">
+                            <div class="col s12 blue-theme">
+                                <div class="row mg-bottom-20">
+                                    <div id="UpdatePanel2">
+	
+                                            <div class="row col s12 mg-bottom-3">
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Nro. cotización</span>
+                                                    <span id="resNumCotizacion" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Fecha de cotización</span>
+                                                    <span id="resFecCotizacion" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span id="lbAño" class="type">Año de ingreso a la universidad</span>
+                                                    <span id="resAnioMaduracion" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Tarifa</span>
+                                                    <span id="resTarifa" class="name"></span>
+                                                </div>
+                                            </div>
+                                        
+</div>
+
+
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="input-field col s12 no-pd-top-bottom">
+                                            <span class="name">Datos personales del solicitante</span>
+                                        </div>
+                                    </div>
+                                    <div id="UpdatePanel1">
+	
+                                            <div class="row col s12 mg-bottom-3">
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Identificación</span>
+                                                    <span id="resNroIdentificacion" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Nombre</span>
+                                                    <span id="resNombreCompleto" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Sexo</span>
+                                                    <span id="resGenero" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Fecha de nacimiento</span>
+                                                    <span id="resFechaNacimiento" class="name"></span>
+                                                </div>
+                                                <div class="row"></div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Edad (Años)</span>
+                                                    <span id="resEdadCumplida" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Correo electrónico</span>
+                                                    <span id="resCorreoElectronico" class="name"></span>
+                                                </div>
+                                            </div>
+                                        
+</div>
+
+
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="input-field col s12 no-pd-top-bottom">
+                                            <span class="name">Datos del beneficiario</span>
+                                        </div>
+                                    </div>
+                                    <div id="UpdatePanel3">
+	
+                                            <div class="row col s12 mg-bottom-3">
+                                                <div id="divNroIdentificacionBen" class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Identificación</span>
+                                                    <span id="resNroIdentificacionBen" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Nombre</span>
+                                                    <span id="resNombreCompletoBen" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Sexo</span>
+                                                    <span id="resGeneroBen" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Fecha de nacimiento</span>
+                                                    <span id="resFechaNacimientoBen" class="name"></span>
+                                                </div>
+                                                <div class="row col col-s-3 col-t-6 col-m-12">
+                                                    <span class="type">Edad (Años)</span>
+                                                    <span id="resEdadCumplidaBen" class="name"></span>
+                                                </div>
+                                            </div>
+                                        
+</div>
+
+                                    <div id="UpdatePanel4">
+	
+                                            <div id="divColegio">
+                                                <div class="row no-pd-top-bottom">
+                                                    <div class="input-field col s12 no-pd-top-bottom">
+                                                        <span class="name">Datos del colegio</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row col s12 mg-bottom-5">
+                                                    <div class="row col col-s-3 col-t-6 col-m-12">
+                                                        <span class="type">Institución educativa</span>
+                                                        <span id="resColegio" class="name"></span>
+                                                    </div>
+                                                    <div class="row col col-s-3 col-t-6 col-m-12">
+                                                        <span class="type">Número de grados</span>
+                                                        <span id="resGrados" class="name"></span>
+                                                    </div>
+                                                    <div class="row col col-s-3 col-t-6 col-m-12">
+                                                        <span class="type">Calendario</span>
+                                                        <span id="resCalendario" class="name"></span>
+                                                    </div>
+                                                    <div class="row col col-s-3 col-t-6 col-m-12">
+                                                        <span class="type">Curso</span>
+                                                        <span id="resCurso" class="name"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+</div>
+                                    <div class="row no-pd-top-bottom">
+                                        <div class="input-field col s6 no-pd-top-bottom">
+                                            <span class="name">Información de productos cotizados</span>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="row col s12 mg-bottom-5">
+                                        <div id="UpdatePanel5">
+	
+                                                
+                                            
+</div>
+                                    </div>
+                                    
+
+                                    <div id="UPanelModular" class="mg-bottom-70">
+	
+                                            <div id="Div1" class="row">
+                                                <div class="input-field col s12">
+                                                    <span class="name">Evaluación para la emisión de la póliza</span>
+                                                </div>
+                                                <div class="input-field col s12">
+                                                    <label class="col s12">La compañía podrá solicitar exámenes médicos como parte del proceso de emisión.</label>
+                                                </div>
+                                                <div class="input-field col s12 mg-top-30">
+                                                    <label class="col s12">Nota:&nbsp;Los exámenes podrán ser o no solicitados, según el momento de firma de la solicitud y los productos vigentes que tenga en dicho momento con la compañía.</label>
+                                                </div>
+                                                <div class="input-field col s12 mg-top-30">
+                                                    <label id="Label4" class="col s12">Se toma como referencia el valor asegurado, el producto educativo seleccionado como más opcionado.</label>
+                                                </div>
+                                            </div>
+                                        
+</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 right-align">
+                                    <div class="gb-toolbar valign-wrapper mdl-color--grey-300">
+                                        <div id="UpdatePanelCot">
+	
+
+                                                <input name="Cerrar" type="submit" id="Cerrar" value=" Cerrar" class="btn red white-text text-normal left" onclick="return cerrarpagina();" tabindex="-1">
+                                                
+                                                
+                                                <input type="submit" name="VolverCotizar" value="Volver a Cotizar" id="VolverCotizar" class="btn blue-grey lighten-5 light-blue-text text-darken-4 text-normal mg-right-10" tabindex="-1">
+                                                <input type="submit" name="CotizarFinanciacion" value="Cotizar financiación" id="CotizarFinanciacion" class="btn green white-text text-normal mg-right-10" tabindex="-1">
+                                                <input type="submit" name="Imprimir" value="Imprimir" id="Imprimir" class="btn blue white-text text-normal mg-right-10" tabindex="-1">
+                                                <input type="submit" name="Correo" value="Enviar por Correo" id="Correo" class="btn blue-grey lighten-5 light-blue-text text-darken-4 text-normal mg-right-10" tabindex="-1">
+
+                                            
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </aside>
+                </article>
+            </section>
+        </div>
+
+        <a id="lkProductos" href="javascript:__doPostBack('lkProductos','')" style="display: none" tabindex="-1"></a>
+        
+        <div id="pnlProductos" style="position: fixed; z-index: 100001; left: 114px; top: -49px;">
+	
+            <div id="UpdatePanel17">
+		
+                    <div class="col s12">
+                        <div class="col s12 blue-theme">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="row mg-1">
+                                        <label id="lbTitulo" style="font-size: 20px">Cobertura seleccionada</label>
+                                    </div>
+                                    <br>
+                                    
+                                    <div id="divCoberturasCompleto" class="wraper-table"> 
+                                        <div id="panelCoberturasComapleto" style="height:500px;width:600px;">
+			
+                                            <div class="row col s12" style="margin-left:50px">
+                                                Amparo básico
+                                                    <div style="float: right; margin-right:50px">
+                                                        <span id="lblValorAmparo" style="font-weight:bold;">$ 169.511.000</span>
+                                                    </div>
+                                                <br>
+                                                <label id="lbproducto">Global Garantizada 360</label>
+                                            </div>
+                                            <div>
+				<table cellspacing="0" rules="all" border="1" id="gvCoberturasCampleto" style="border-collapse:collapse;">
+					<tbody><tr>
+						<th scope="col">
+                                                            <input id="gvCoberturasCampleto_chkTodos" type="checkbox" name="gvCoberturasCampleto$ctl01$chkTodos" onclick="javascript:setTimeout('__doPostBack(\'gvCoberturasCampleto$ctl01$chkTodos\',\'\')', 0)"><label for="gvCoberturasCampleto_chkTodos"> </label>
+                                                        </th><th scope="col">Cobertura</th><th scope="col">Valor</th>
+					</tr><tr>
+						<td>
+                                                            <input id="gvCoberturasCampleto_chkSeleccionar_0" type="checkbox" name="gvCoberturasCampleto$ctl02$chkSeleccionar" onclick="javascript:setTimeout('__doPostBack(\'gvCoberturasCampleto$ctl02$chkSeleccionar\',\'\')', 0)"><label for="gvCoberturasCampleto_chkSeleccionar_0"> </label>
+                                                        </td><td>Vida Protección Familiar</td><td class="autoWidth">
+                                                            <span id="gvCoberturasCampleto_lblValor_0">$ 3.770.000</span>
+                                                        </td>
+					</tr><tr>
+						<td>
+                                                            <input id="gvCoberturasCampleto_chkSeleccionar_1" type="checkbox" name="gvCoberturasCampleto$ctl03$chkSeleccionar" onclick="javascript:setTimeout('__doPostBack(\'gvCoberturasCampleto$ctl03$chkSeleccionar\',\'\')', 0)"><label for="gvCoberturasCampleto_chkSeleccionar_1"> </label>
+                                                        </td><td>Vida Continuidad Escolar</td><td class="autoWidth">
+                                                            <span id="gvCoberturasCampleto_lblValor_1">$ 3.238.000</span>
+                                                        </td>
+					</tr><tr>
+						<td>
+                                                            <input id="gvCoberturasCampleto_chkSeleccionar_2" type="checkbox" name="gvCoberturasCampleto$ctl04$chkSeleccionar" onclick="javascript:setTimeout('__doPostBack(\'gvCoberturasCampleto$ctl04$chkSeleccionar\',\'\')', 0)"><label for="gvCoberturasCampleto_chkSeleccionar_2"> </label>
+                                                        </td><td>Renta Bienestar Universitaria</td><td class="autoWidth">
+                                                            <span id="gvCoberturasCampleto_lblValor_2">$ 34.284.000</span>
+                                                        </td>
+					</tr>
+				</tbody></table>
+			</div>
+                                            <br>
+                                            <div class="row col s12" style="margin-left:50px">
+                                                Prima total:
+                                                    <div style="float: right; margin-right:50px">
+                                                        <span id="lblTotal" style="font-weight:bold;">$ 169.511.000</span>
+                                                    </div>
+                                                <br>
+                                                <label>Esta prima incluye la cobertura del amparo básico más los amparos adicionales que usted seleccionó.</label>
+                                            </div>
+                                        
+		</div>
+                                    </div>
+                                    
+
+                                </div>
+                                <div class="card-action right-align">
+                                    <div class="input-field col s12 mg-top-1">
+                                        <input type="submit" name="MuestraCotizacion" value="Continuar" id="MuestraCotizacion" class="btn blue darken-1 light-white-text text-darken-4 text-normal">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+	</div>
+        
+</div>
+        <a id="lkEmail" href="javascript:__doPostBack('lkEmail','')" style="display: none" tabindex="-1"></a>
+        
+        <div id="pnlEmail" style="width: 400px; display: none; position: fixed; z-index: 100001;">
+	
+            <div id="UpdatePanel7">
+		
+                    <div class="col s12">
+                        <div class="col s12 blue-theme">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="row mg-1">
+                                        <div class="col s12 mg-top-10">
+                                            <input type="submit" name="CierraEmail" value="X" id="CierraEmail" class="card-close" tabindex="-1">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input name="CorreoCliente" type="text" id="CorreoCliente" placeholder="" tabindex="-1">
+                                            <label class="active">Para</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input name="CorreoIntermediario" type="text" id="CorreoIntermediario" placeholder="" tabindex="-1">
+                                            <label class="active">Con copia</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input name="AsuntoCorreo" type="text" value="Cotización Global Seguros" id="AsuntoCorreo" placeholder="" tabindex="-1">
+                                            <label class="active">Asunto</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-action blue-grey lighten-5 center-align">
+                                    <input type="submit" name="EnviarEmail" value="Enviar correo" id="EnviarEmail" class="btn blue-grey lighten-5 red-text text-darken-4 valign mg-center-10 text-normal" tabindex="-1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                
+	</div>
+        
+
+        <div id="UpdateProgress1" style="display:none;" role="status" aria-hidden="true">
+	
+                <div style="background-color: white; filter: alpha(opacity=40); opacity: 0.60; width: 100%; top: 0px; left: 0px; position: fixed; height: 100%; z-index: 100002 !important;">
+                </div>
+                <div class="card-panel white lighten-2" style="filter: alpha(opacity=100); opacity: 1; vertical-align: middle; top: 45%; position: fixed; right: 45%; z-index: 100002 !important;">
+                    <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+</div>
+        <a id="lkMensajeInformativo" href="javascript:__doPostBack('lkMensajeInformativo','')" style="display: none" tabindex="-1"></a>
+        
+        <div id="pnlMensajeInformativo" style="display: none; position: fixed; z-index: 100001;">
+	
+            <div id="UpdatePanel23">
+		
+                    <div class="row">
+                        <div class="col s12">
+                            <div id="divMensajes" class="alert info">
+                                <div class="row mg-5">
+                                    <br>
+                                </div>
+                                <div class="row mg-5 center-align">
+                                    <div class="col s12">
+                                        <input type="submit" name="CierraMensajeInformativo" value="Aceptar" id="CierraMensajeInformativo" class="btn blue darken-1 white-text text-darken-4 text-normal" tabindex="-1">
+                                        <input type="submit" name="CierreMensajeError" value="Aceptar" id="CierreMensajeError" class="btn red darken-1 white-text text-darken-4 text-normal" style="background-color:#F2DEDE;" tabindex="-1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+	</div>
+        
+</div>
+        
+        <a id="lkTipoTomador" href="javascript:__doPostBack('lkTipoTomador','')" style="display: none" tabindex="-1"></a>
+        
+        <div id="pnlTipoTomador" style="width: 600px; display: none; position: fixed; z-index: 100001;">
+	
+            <div style="max-height: 450px; overflow: auto;">
+                <div id="UpdatePaneTipoTomador">
+		
+                        <div class="col s12 blue-theme">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="row mg-1">
+                                        <div class="col s12 mg-top-10">
+                                            <input type="submit" name="CierraTipoTomador" value="X" id="CierraTipoTomador" class="card-close" tabindex="-1">
+                                        </div>
+                                        <div class="input-field col col-s-12 col-m-12">
+                                            <label class="active">El Tomador es:</label>
+                                        </div>
+                                        <div class="row"></div>
+                                        <div class="card-action row mg-5 center-align">
+                                            <div class="col s6">
+                                                <input type="submit" name="PnTipoTomador" value="P. Natural" id="PnTipoTomador" class="btn blue darken-1 white-text text-darken-4 text-normal" tabindex="-1">
+                                            </div>
+                                            <div class="col s6">
+                                                <input type="submit" name="PjTipoTomador" value="P. Juridica" id="PjTipoTomador" class="btn red darken-1 white-text text-darken-4 text-normal" style="background-color:#F2DEDE;" tabindex="-1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+	</div>
+            </div>
+        
+</div>
+        
+        
+        <input type="hidden" name="hOperacion" id="hOperacion" value="1" tabindex="-1">
+        <input type="hidden" name="hUltCot" id="hUltCot" value="371577" tabindex="-1">
+        <input type="hidden" name="hSnEncuentraTarifa" id="hSnEncuentraTarifa" value="-1" tabindex="-1">
+        <div id="UpdatePanel12">
+	
+                <input type="hidden" name="DowloadFile" id="DowloadFile" tabindex="-1">
+                <input type="hidden" name="hFile" id="hFile" tabindex="-1">
+                <input type="hidden" name="hFiltroProducto" id="hFiltroProducto" value="135" tabindex="-1">
+                <input type="hidden" name="hMarcados" id="hMarcados" value="0" tabindex="-1">
+                <input type="hidden" name="hIdPersona" id="hIdPersona" value="0" tabindex="-1">
+                <input type="hidden" name="hTipoAgente" id="hTipoAgente" value="1" tabindex="-1">
+                <input type="hidden" name="hCodAgente" id="hCodAgente" value="8080" tabindex="-1">
+                <input type="hidden" name="hSumaAseguradaRequisitos" id="hSumaAseguradaRequisitos" value="0" tabindex="-1">
+            
+</div>
+    
+
+<script type="text/javascript">
+//<![CDATA[
+(function() {var fn = function() {Sys.Extended.UI.ModalPopupBehavior.invokeViaServer('mpeProductos', true); Sys.Application.remove_load(fn);};Sys.Application.add_load(fn);})();Sys.Extended.UI.Localization.SetLocale("es");
+theForm.oldSubmit = theForm.submit;
+theForm.submit = WebForm_SaveScrollPositionSubmit;
+
+theForm.oldOnSubmit = theForm.onsubmit;
+theForm.onsubmit = WebForm_SaveScrollPositionOnSubmit;
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlProductos","dynamicServicePath":"/CotizadorEducativoEM/resumen.aspx","id":"mpeProductos"}, null, null, $get("lkProductos"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlEmail","dynamicServicePath":"/CotizadorEducativoEM/resumen.aspx","id":"mpeEmail"}, null, null, $get("lkEmail"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.UI._UpdateProgress, {"associatedUpdatePanelId":null,"displayAfter":500,"dynamicLayout":true}, null, null, $get("UpdateProgress1"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlMensajeInformativo","dynamicServicePath":"/CotizadorEducativoEM/resumen.aspx","id":"mpeMensajeInformativo"}, null, null, $get("lkMensajeInformativo"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.Extended.UI.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","PopupControlID":"pnlTipoTomador","dynamicServicePath":"/CotizadorEducativoEM/resumen.aspx","id":"mpeTipoTomador"}, null, null, $get("lkTipoTomador"));
+});
+//]]>
+</script>
+<div id="mpeProductos_backgroundElement" class="modalBackground" style="position: fixed; left: 0px; top: 0px; z-index: 10000; width: 885px; height: 1164px;"></div><div id="mpeEmail_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div><div id="mpeMensajeInformativo_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div><div id="mpeTipoTomador_backgroundElement" class="modalBackground" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000;"></div></form>
+
+
+<div class="hiddendiv common"></div></body></html>

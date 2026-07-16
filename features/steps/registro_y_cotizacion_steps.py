@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from pages.cliente_nuevo_page import BusquedaClientePage, TipoDocumento
 from pages.inicio_sesion_page import LoginPage
+from selenium.common.exceptions import TimeoutException
 from pages.cotizacion_page import CotizacionPage
 
 
@@ -183,12 +184,45 @@ def step_impl_diligenciar_cotizacion(context):
         institucion_nombre="COLEGIO NACIONAL ANDRES BELLO",
         curso_val="TERCERO"
     )
+    context.pagina_cotizacion.seleccionar_producto_materialize("Global Garantizada 360")
+    context.pagina_cotizacion.calcular_y_confirmar_anio_ingreso()
     
 
 @when('hace clic en el botón "Cotizar"')
 @then('hace clic en el botón "Cotizar"')
 def step_impl_clic_cotizar(context):
-    context.pagina_cotizacion.clic_boton_cotizar()
+    wait = WebDriverWait(context.driver, 15)
+    
+    # 1. MATAR EL MODAL DE CÁLCULO DE AÑO ("Aceptar")
+    try:
+        print("[QA Info] Buscando modal de cálculo de año...")
+        # Busca cualquier elemento (button, a, input) que tenga el texto o valor "Aceptar"
+        btn_aceptar_modal = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Aceptar') or @value='Aceptar']")))
+        context.driver.execute_script("arguments[0].click();", btn_aceptar_modal)
+        print("[QA Info] Modal de cálculo cerrado con éxito.")
+        time.sleep(1.5)  # Breve pausa para que termine la animación de cierre del modal
+    except TimeoutException:
+        print("[QA Info] No se detectó el modal de cálculo o ya estaba cerrado.")
+
+    # 2. CLIC EN EL BOTÓN COTIZAR
+    # Ahora que la pantalla está limpia, hacemos clic en Cotizar
+    btn_cotizar = wait.until(EC.element_to_be_clickable((By.ID, "Cotizar")))
+    context.driver.execute_script("arguments[0].click();", btn_cotizar)
+    print("[QA Info] Clic en botón Cotizar exitoso. Esperando modal de coberturas...")
+    
+    # 3. MANEJAR EL MODAL DE COBERTURAS (El del Checkbox del problema anterior)
+    # Esperar que aparezca el botón Continuar del modal
+    btn_continuar_coberturas = wait.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
+    
+    # Marcar el checkbox inyectando JS puro
+    context.driver.execute_script("document.getElementById('gvCoberturasCampleto_chkSeleccionar_0').click();")
+    
+    # PAUSA OBLIGATORIA por el PostBack de ASP.NET
+    time.sleep(2.5)
+    
+    # Clic en Continuar del modal
+    context.driver.execute_script("arguments[0].click();", btn_continuar_coberturas)
+    print("[QA Info] Modal de coberturas superado. Esperando resultado final...")
 
 
 @then('el sistema debe generar la cotización correctamente')
@@ -196,3 +230,5 @@ def step_impl_validar_cotizacion(context):
     resultado = context.pagina_cotizacion.obtener_resultado_cotizacion()
     assert resultado is not None, "El sistema no devolvió un resultado de cotización."
     print(f"[QA INFO] ¡Flujo Unificado Exitoso! Resultado obtenido: {resultado}")
+    # 3. Modal de Coberturas (El nuevo método ActionChains)
+   
