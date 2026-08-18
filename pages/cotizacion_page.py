@@ -493,5 +493,5 @@ class CotizacionPage(BasePage):
         time.sleep(2) 
         
         # 4. Esperar y hacer clic en el botón Continuar
-        btn_continuar = wait.until(EC.element_to_be_clickable((Bys.ID, "MuestraCotizacion")))
+        btn_continuar = wait.until(EC.element_to_be_clickable((By.ID, "MuestraCotizacion")))
         driver.execute_script("arguments[0].click();", btn_continuar)

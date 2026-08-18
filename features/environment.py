@@ -5,11 +5,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 def before_all(context):
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
-    # Cambiamos la estrategia de carga a 'eager'. 
-    # Esto le dice a Selenium: "Continúa en cuanto el DOM esté interactivo, no esperes a que bajen todas las imágenes/scripts".
+    # Estrategia 'eager' para que no espere imágenes/scripts pesados
     options.page_load_strategy = 'eager' 
     
+    # 1. Inicializas el driver
     context.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    
+    # 2. Configuras el tiempo límite de espera de carga aquí (ej. 180 segundos / 3 minutos)
+    context.driver.set_page_load_timeout(180)
 
 def before_scenario(context, scenario):
     """Se ejecuta antes de cada escenario individual."""
