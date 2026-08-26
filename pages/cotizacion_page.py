@@ -461,6 +461,8 @@ class CotizacionPage(BasePage):
         
         # 1. Localizar el botón Cerrar
         btn_cerrar = self.wait.until(EC.element_to_be_clickable((By.ID, "Cerrar")))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn_cerrar)
+        time.sleep(1.0)
         
         # 2. Obtener el 'handle' de la ventana principal para volver después
         ventana_principal = self.driver.window_handles[0]
@@ -475,23 +477,24 @@ class CotizacionPage(BasePage):
         
         print("[QA Info] Ventana de cotización cerrada. Foco regresado a la ventana principal.")
 
-    def seleccionar_cobertura_y_continuar(driver):
-        wait = WebDriverWait(driver, 15)
+def seleccionar_cobertura_y_cerrar(self):
+        """
+        Marca el checkbox de selección de la cobertura y hace clic en cerrar/continuar una sola vez.
+        """
+        print("[QA Info] Seleccionando cobertura y cerrando modal...")
         
-        # 1. Esperar a que el modal y el checkbox estén presentes en el DOM
-        # Usamos el ID del primer checkbox de la tabla
+        # 1. Localizar y marcar el checkbox usando JS (evita problemas de interceptación de clic)
         checkbox_id = "gvCoberturasCampleto_chkSeleccionar_0"
-        checkbox = wait.until(EC.presence_of_element_located((By.ID, checkbox_id)))
+        checkbox = self.wait.until(EC.presence_of_element_located((By.ID, checkbox_id)))
         
-        # 2. Hacer clic usando JavaScript. 
-        # Esto evita el clásico error "Element is not clickable at point" en modales superpuestos.
-        driver.execute_script("arguments[0].click();", checkbox)
+        # Verificamos si ya está marcado antes de hacer clic para evitar desmarcarlo
+        if not checkbox.is_selected():
+            self.driver.execute_script("arguments[0].click();", checkbox)
+            time.sleep(1.5)  # Breve pausa para la respuesta del PostBack/ASP.NET
+
+        # 2. Localizar y hacer clic en el botón Cerrar/MuestraCotizacion una única vez
+        btn_cerrar = self.wait.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
+        time.sleep(5)  # Breve pausa para la respuesta del PostBack/ASP.NET
+        self.driver.execute_script("arguments[0].click();", btn_cerrar)
         
-        # 3. ¡Paso crítico! Esperar a que el UpdatePanel termine su PostBack.
-        # Si la página tiene un spinner o loader, espera a que desaparezca. 
-        # Si no, un sleep corto es el "mal necesario" en WebForms antiguos.
-        time.sleep(2) 
-        
-        # 4. Esperar y hacer clic en el botón Continuar
-        btn_continuar = wait.until(EC.element_to_be_clickable((By.ID, "MuestraCotizacion")))
-        driver.execute_script("arguments[0].click();", btn_continuar)
+        print("[QA Info] Cobertura seleccionada y modal cerrado.")

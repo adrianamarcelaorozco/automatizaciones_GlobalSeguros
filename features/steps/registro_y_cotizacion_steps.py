@@ -121,7 +121,6 @@ def step_impl_completar_formulario(context, tipo_doc_key):
 @when('el sistema debe confirmar que la grabación del nuevo cliente se realizó correctamente')
 @then('el sistema debe confirmar que la grabación del nuevo cliente se realizó correctamente')
 def step_impl_verificar_grabacion(context):
-    # Añadir un breve sleep o espera de invisibilidad del cargador si existe
     time.sleep(2.0) 
     mensaje_capturado = context.pagina_busqueda.obtener_mensaje_exito_y_cerrar()
     assert "Grabación realizada correctamente" in mensaje_capturado, \
@@ -131,10 +130,8 @@ def step_impl_verificar_grabacion(context):
 @when('el analista se desplaza hasta la sección "Opciones de Cotización" del nuevo flujo')
 @then('el analista se desplaza hasta la sección "Opciones de Cotización" del nuevo flujo')
 def step_impl_scroll(context):
-    # Instanciamos la página de cotización compartiendo el mismo driver
     context.pagina_cotizacion = CotizacionPage(context.driver)
     
-    # Certificamos en consola que heredó el cliente recién creado en la variable de contexto
     if hasattr(context, 'documento_random'):
         print(f"[QA INFO] Flujo continuo: Cotizando al cliente recién registrado: {context.documento_random}")
     else:
@@ -156,28 +153,19 @@ def step_impl_cambiar_ventana(context):
     context.pagina_cotizacion.validar_pantalla_cotizador()
     time.sleep(1)
 
+
 @when('diligencia la información requerida para la cotización')
 def step_impl_diligenciar_cotizacion(context):
-    # 1. Asegurar que estamos en la ventana correcta (la última abierta)
     ventanas = context.driver.window_handles
     if len(ventanas) > 1:
         context.driver.switch_to.window(ventanas[-1])
     
-    # 2. Solo buscar iframes dentro de esta ventana
     iframes = context.driver.find_elements(By.TAG_NAME, "iframe")
     if iframes:
         context.driver.switch_to.frame(iframes[0])
 
-    # NUEVO: Asegurar visibilidad antes de interactuar
     context.pagina_cotizacion.asegurar_seccion_beneficiario_visible()
-   
-    # Proceder con las acciones
-    # context.pagina_cotizacion.seleccionar_apoyo_institucional()
-    
-    # 2. Llamamos a nuestra nueva función para seleccionar el tipo de documento
     context.pagina_cotizacion.seleccionar_tipo_documento_beneficiario("Registro Civil")
-    
-    # 3. Llenamos toda la información personal con el nuevo método aleatorio
     context.pagina_cotizacion.diligenciar_datos_aleatorios_beneficiario()
     context.pagina_cotizacion.diligenciar_datos_colegio(
         depto_text="DISTRITO CAPITAL",
@@ -186,141 +174,73 @@ def step_impl_diligenciar_cotizacion(context):
     )
     context.pagina_cotizacion.seleccionar_producto_materialize("Global Garantizada 360")
     context.pagina_cotizacion.calcular_y_confirmar_anio_ingreso()
-    
+
 
 @when('hace clic en el botón "Cotizar"')
 @then('hace clic en el botón "Cotizar"')
 def step_impl_clic_cotizar(context):
     wait = WebDriverWait(context.driver, 15)
     
-    # 1. MATAR EL MODAL DE CÁLCULO DE AÑO ("Aceptar")
+    # 1. CERRAR MODAL DE CÁLCULO DE AÑO EN CASO DE APARICIÓN
     try:
-        print("[QA Info] Buscando modal de cálculo de año...")
-        # Busca cualquier elemento (button, a, input) que tenga el texto o valor "Aceptar"
-        btn_aceptar_modal = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Aceptar') or @value='Aceptar']")))
+        btn_aceptar_modal = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Aceptar') or @value='Aceptar']"))
+        )
         context.driver.execute_script("arguments[0].click();", btn_aceptar_modal)
-        print("[QA Info] Modal de cálculo cerrado con éxito.")
-        time.sleep(1.5)  # Breve pausa para que termine la animación de cierre del modal
+        print("[QA Info] Modal de cálculo cerrado.")
+        time.sleep(1.5)
     except TimeoutException:
-        print("[QA Info] No se detectó el modal de cálculo o ya estaba cerrado.")
+        print("[QA Info] No apareció modal de cálculo previo.")
 
     # 2. CLIC EN EL BOTÓN COTIZAR
     print("[QA Info] Buscando el botón 'Cotizar'...")
     btn_cotizar = wait.until(EC.element_to_be_clickable((By.ID, "Cotizar")))
-    
-    # Asegurarnos de que el botón esté visible en la pantalla
     context.driver.execute_script("arguments[0].scrollIntoView(true);", btn_cotizar)
     time.sleep(0.5)
-    
-    # Hacemos clic y forzamos el evento del formulario por si acaso
     context.driver.execute_script("arguments[0].click();", btn_cotizar)
-    print("[QA Info] Clic en botón Cotizar ejecutado. Esperando que aparezca el modal de coberturas...")
-    
-    # 3. MANEJAR EL MODAL DE COBERTURAS CON ESPACIO DE TIEMPO ROBUSTO
-    wait_modal = WebDriverWait(context.driver, 60)  
-    
-   # 3. MANEJAR EL MODAL DE COBERTURAS Y SELECCIONAR EL CHECKBOX
-    wait_modal = WebDriverWait(context.driver, 60)  
-    
-    # Esperamos a que aparezca el contenedor del modal
+    print("[QA Info] Clic en botón Cotizar ejecutado.")
+
+    # 3. MANEJAR MODAL DE COBERTURAS (UNA SOLA EJECUCIÓN)
+    wait_modal = WebDriverWait(context.driver, 30)
     wait_modal.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
-    print("[QA Info] Modal de coberturas detectado con éxito.")
-    
-    # Pausa breve para que el DOM interno termine de renderizar las filas y el checkbox
-    time.sleep(1)
-    
-    # Forzamos el clic directamente por JavaScript usando el ID exacto del checkbox maestro
-    context.driver.execute_script("document.getElementById('gvCoberturasCampleto_chkTodos').click();")
-    print("[QA Info] Checkbox maestro 'chkTodos' seleccionado mediante JavaScript.")
-    
-    # PAUSA OBLIGATORIA por el PostBack de ASP.NET
-    time.sleep(2.5)
-    
-    # Clic en el botón Continuar del modal
-    btn_continuar_coberturas = wait_modal.until(
-        EC.element_to_be_clickable((By.ID, "MuestraCotizacion"))
-    )
-    context.driver.execute_script("arguments[0].click();", btn_continuar_coberturas)    
-    print("[QA Info] Modal de coberturas superado. Verificando estado del sistema...")
-    
-    # PAUSA OBLIGATORIA por el PostBack de ASP.NET
-    time.sleep(2.5)
-    
-    # Clic en el botón Continuar del modal
-    btn_continuar_coberturas = wait_modal.until(
-        EC.element_to_be_clickable((By.ID, "MuestraCotizacion"))
-    )
-    context.driver.execute_script("arguments[0].click();", btn_continuar_coberturas)    
-    print("[QA Info] Modal de coberturas superado. Verificando estado del sistema...")
+    print("[QA Info] Modal de coberturas detectado.")
 
-    # 3. MANEJAR EL MODAL DE COBERTURAS
-    wait_modal = WebDriverWait(context.driver, 60)  
-    wait_modal.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))    
-    
-    # NUEVO: Esperar explícitamente a que el checkbox maestro esté presente antes de interactuar
-    chk_todos = wait_modal.until(
-        EC.presence_of_element_located((By.ID, "gvCoberturasCampleto_chkTodos"))
-    )
-    
-    # Marcar el checkbox usando el elemento ya validado y seguro
-    context.driver.execute_script("arguments[0].scrollIntoView(true);", chk_todos)
-    time.sleep(0.5)
-    context.driver.execute_script("arguments[0].click();", chk_todos)
-    
-    # PAUSA OBLIGATORIA por el PostBack de ASP.NET
-    time.sleep(2.5)
-    
-    # Clic en Continuar del modal de coberturas
+    # Esperamos el checkbox y aseguramos que no esté seleccionado antes de presionar
+    chk_todos = wait_modal.until(EC.presence_of_element_located((By.ID, "gvCoberturasCampleto_chkTodos")))
+    if not chk_todos.is_selected():
+        context.driver.execute_script("arguments[0].click();", chk_todos)
+        print("[QA Info] Checkbox maestro 'chkTodos' marcado.")
+        time.sleep(2.5)  # Espera vital para el PostBack de ASP.NET
+
+    # Clic en el botón Continuar del modal (UNA SOLA VEZ)
     btn_continuar_coberturas = wait_modal.until(EC.element_to_be_clickable((By.ID, "MuestraCotizacion")))
-    context.driver.execute_script("arguments[0].click();", btn_continuar_coberturas)    
-    print("[QA Info] Modal de coberturas superado. Verificando estado del sistema...")
-    
-    # =========================================================================
-    # MANEJO ROBUSTO DEL MENSAJE OCASIONAL DE ERROR DE FINANCIACIÓN
-    # =========================================================================
-    try:
-        # Damos un margen de hasta 6 segundos para ver si el popup de error decide aparecer
-        wait_error = WebDriverWait(context.driver, 6)
-        
-        print("[QA Info] Comprobando si el sistema arrojó el error de financiación...")
-        btn_cerrar_error = wait_error.until(
-            EC.element_to_be_clickable((By.ID, "CierreMensajeError"))
-        )
-        
-        print("[QA Info] ⚠️ ¡Alerta detectada! Cerrando mensaje del administrador...")
-        context.driver.execute_script("arguments[0].click();", btn_cerrar_error)
-        time.sleep(1.5)
-        
-        # Si cerramos el error, a veces es necesario reintentar hacer clic en el botón de cotizar financiación o continuar
-        print("[QA Info] Error superado con éxito. Continuando con el flujo...")
-        
-    except TimeoutException:
-        print("[QA Info] El aviso de error del administrador no apareció. Prosiguiendo normalmente...")
+    context.driver.execute_script("arguments[0].click();", btn_continuar_coberturas)
+    print("[QA Info] Modal de coberturas cerrado.")
 
-   # =========================================================================
-    # HACER CLIC EN EL BOTÓN "CERRAR" PARA FINALIZAR
-    # =========================================================================
-    print("[QA Info] Cerrando la ventana o cotización actual...")
-    
-    # Buscamos el botón "Cerrar" justo en el momento de interactuar para evitar elementos obsoletos
-    btn_cerrar = WebDriverWait(context.driver, 30).until(
+    # 4. MANEJO OCASIONAL DE ERROR DE FINANCIACIÓN
+    try:
+        wait_error = WebDriverWait(context.driver, 5)
+        btn_cerrar_error = wait_error.until(EC.element_to_be_clickable((By.ID, "CierreMensajeError")))
+        context.driver.execute_script("arguments[0].click();", btn_cerrar_error)
+        print("[QA Info] ⚠️ Alerta de error cerrada.")
+        time.sleep(1.5)
+    except TimeoutException:
+        pass
+
+    # 5. CLIC EN EL BOTÓN "CERRAR" FINAL
+    print("[QA Info] Cerrando cotización actual...")
+    btn_cerrar = WebDriverWait(context.driver, 15).until(
         EC.element_to_be_clickable((By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']"))
     )
-    
-    context.driver.execute_script("arguments[0].scrollIntoView(true);", btn_cerrar)
-    time.sleep(0.5)
+    time.sleep(2)
     context.driver.execute_script("arguments[0].click();", btn_cerrar)
-    print("[QA Info] Clic en el botón 'Cerrar' ejecutado con éxito. Fin del proceso.")
-    
+    print("[QA Info] Proceso de cotización finalizado.")
+
 
 @then('el sistema debe generar la cotización correctamente')
 def step_impl_validar_cotizacion(context):
-    print("[QA INFO] Ventana de cotización cerrada correctamente. Devolviendo el foco a la ventana principal...")
-    
-    # Volvemos a cambiar el foco a la primera pestaña/ventana abierta (la principal del portal)
+    print("[QA INFO] Devolviendo el foco a la ventana principal...")
     ventanas = context.driver.window_handles
     if len(ventanas) > 1:
         context.driver.switch_to.window(ventanas[0])
-    
-    print("[QA Info] ¡Prueba de registro y cotización finalizada con éxito!")
-   
+    print("[QA Info] ¡Prueba finalizada con éxito!")
