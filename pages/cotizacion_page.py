@@ -492,6 +492,8 @@ def seleccionar_cobertura_y_cerrar(self):
             self.driver.execute_script("arguments[0].click();", checkbox)
             time.sleep(1.5)  # Breve pausa para la respuesta del PostBack/ASP.NET
 
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn_cerrar)
+
         # 2. Localizar y hacer clic en el botón Cerrar/MuestraCotizacion una única vez
         btn_cerrar = self.wait.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
         time.sleep(5)  # Breve pausa para la respuesta del PostBack/ASP.NET

@@ -218,16 +218,7 @@ def step_impl_clic_cotizar(context):
     print("[QA Info] Modal de coberturas cerrado.")
 
     # 4. MANEJO OCASIONAL DE ERROR DE FINANCIACIÓN
-    try:
-        wait_error = WebDriverWait(context.driver, 5)
-        btn_cerrar_error = wait_error.until(EC.element_to_be_clickable((By.ID, "CierreMensajeError")))
-        context.driver.execute_script("arguments[0].click();", btn_cerrar_error)
-        print("[QA Info] ⚠️ Alerta de error cerrada.")
-        time.sleep(1.5)
-    except TimeoutException:
-        pass
-
-    # 5. CLIC EN EL BOTÓN "CERRAR" FINAL
+       # 5. CLIC EN EL BOTÓN "CERRAR" FINAL
     print("[QA Info] Cerrando cotización actual...")
     btn_cerrar = WebDriverWait(context.driver, 15).until(
         EC.element_to_be_clickable((By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']"))
@@ -244,3 +235,7 @@ def step_impl_validar_cotizacion(context):
     if len(ventanas) > 1:
         context.driver.switch_to.window(ventanas[0])
     print("[QA Info] ¡Prueba finalizada con éxito!")
+
+    # Pausa final solo para observación visual del resultado (quitar o reducir en CI/ejecución desatendida)
+    print("[QA Info] Manteniendo el navegador abierto 10 segundos para revisión visual...")
+    time.sleep(10)
