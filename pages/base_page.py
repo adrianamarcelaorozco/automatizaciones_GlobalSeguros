@@ -1,3 +1,4 @@
+import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -60,6 +61,21 @@ class BasePage:
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         self.driver.execute_script("arguments[0].click();", element)
         return element
+
+    def esperar_postback(self, timeout=30):
+        """Espera a que el portal termine de ir al servidor (PostBack/AJAX de ASP.NET o jQuery).
+        Si la página no usa esas librerías, simplemente continúa."""
+        time.sleep(0.5)  # Da tiempo a que la petición arranque
+        script = """
+            var asp = (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager)
+                ? Sys.WebForms.PageRequestManager.getInstance().get_isInAsyncPostBack() : false;
+            var jq = (typeof jQuery !== 'undefined') ? jQuery.active > 0 : false;
+            return document.readyState === 'complete' && !asp && !jq;
+        """
+        try:
+            WebDriverWait(self.driver, timeout).until(lambda d: d.execute_script(script))
+        except Exception:
+            print("[QA Info] El servidor sigue procesando; se continúa con el flujo.")
 
     def entrar_iframe_contenido(self, timeout=15):
         """Vuelve al documento principal y entra al iframe 'contenido' donde se renderizan los módulos."""
