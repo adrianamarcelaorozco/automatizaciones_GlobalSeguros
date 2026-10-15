@@ -210,7 +210,13 @@ class CotizacionPage(BasePage):
         print("[QA Info] Esperando a que se abra la nueva pestaña/ventana...")
         self.wait.until(lambda d: len(d.window_handles) > 1)
         self.driver.switch_to.window(self.driver.window_handles[-1])
-        
+
+        # El portal abre el cotizador en una ventana pequeña; la maximizamos para ver todo el flujo
+        try:
+            self.driver.maximize_window()
+        except Exception:
+            print("[QA Info] No se pudo maximizar la ventana del cotizador; se continúa.")
+
         # Pausa vital: Le damos tiempo al navegador para descargar el HTML de la nueva ventana
         time.sleep(3) 
         print(f"[QA Info] Foco cambiado. Título de la nueva ventana: '{self.driver.title}'")
@@ -581,7 +587,10 @@ class CotizacionPage(BasePage):
         print("[QA Info] Cerrando cotización actual...")
         self._ubicar_contexto_de(self.BTN_CERRAR_RESUMEN, timeout=30)
         boton = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.BTN_CERRAR_RESUMEN))
-        time.sleep(2)
+
+        # Bajamos hasta la barra de botones y pausamos para que se vea el resumen antes de cerrar
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", boton)
+        time.sleep(3)
         self.driver.execute_script("arguments[0].click();", boton)
         print("[QA Info] Proceso de cotización finalizado.")
 
