@@ -488,10 +488,15 @@ class CotizacionPage(BasePage):
         if iframes:
             self.driver.switch_to.frame(iframes[0])
 
-    def cotizar_y_cerrar(self):
-        """Cierra el modal de cálculo de año (si aparece), cotiza, acepta todas las coberturas
-        y cierra la cotización."""
-        # 1. Modal de cálculo de año (opcional)
+    # --- Botón Cotizar, coberturas y resumen ---
+
+    BTN_COTIZAR_COTIZADOR = (By.ID, "Cotizar")
+    BTN_CONTINUAR_COBERTURAS = (By.ID, "MuestraCotizacion")
+    CHK_TODAS_COBERTURAS = (By.ID, "gvCoberturasCampleto_chkTodos")
+    BTN_CERRAR_RESUMEN = (By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']")
+
+    def clic_cotizar(self):
+        """Cierra el modal de cálculo de año (si aparece), hace clic en 'Cotizar' y espera la carga."""
         try:
             btn_aceptar = self.wait.until(
                 EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Aceptar') or @value='Aceptar']"))
@@ -502,34 +507,82 @@ class CotizacionPage(BasePage):
         except TimeoutException:
             print("[QA Info] No apareció modal de cálculo previo.")
 
-        # 2. Botón Cotizar
         print("[QA Info] Buscando el botón 'Cotizar'...")
-        self.wait.until(EC.element_to_be_clickable((By.ID, "Cotizar")))
-        self.click_js((By.ID, "Cotizar"))
-        print("[QA Info] Clic en botón Cotizar ejecutado.")
+        self.wait.until(EC.element_to_be_clickable(self.BTN_COTIZAR_COTIZADOR))
+        self.click_js(self.BTN_COTIZAR_COTIZADOR)
+        print("[QA Info] Clic en botón Cotizar ejecutado. Esperando respuesta del servidor...")
+        self.esperar_spinner()
 
-        # 3. Modal de coberturas
-        wait_modal = WebDriverWait(self.driver, 30)
-        wait_modal.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
-        print("[QA Info] Modal de coberturas detectado.")
+        # El cotizador navega a la pantalla de resumen (resumen.aspx). Hay que esperar a que
+        # cargue: si no, el botón 'Cerrar' que se encuentra es el del formulario anterior.
+        try:
+            WebDriverWait(self.driver, 90).until(lambda d: "resumen.aspx" in d.current_url.lower())
+        except TimeoutException:
+            raise AssertionError(
+                "Error de Negocio: Después de 'Cotizar' no cargó la pantalla de resumen. "
+                f"URL actual: {self.driver.current_url}"
+            )
+        self.driver.switch_to.default_content()
+        print("[QA Info] Pantalla de resumen cargada.")
 
-        chk_todos = wait_modal.until(EC.presence_of_element_located((By.ID, "gvCoberturasCampleto_chkTodos")))
+    def _ubicar_contexto_de(self, locator, timeout=60):
+        """Deja el driver en el documento (principal o iframe) donde el elemento está VISIBLE."""
+        def visible_en_algun_contexto(driver):
+            driver.switch_to.default_content()
+            if any(e.is_displayed() for e in driver.find_elements(*locator)):
+                return True
+            for frame in driver.find_elements(By.TAG_NAME, "iframe"):
+                driver.switch_to.default_content()
+                driver.switch_to.frame(frame)
+                if any(e.is_displayed() for e in driver.find_elements(*locator)):
+                    return True
+            driver.switch_to.default_content()
+            return False
+
+        try:
+            WebDriverWait(self.driver, timeout).until(visible_en_algun_contexto)
+        except TimeoutException:
+            raise AssertionError(f"Error de Negocio: No apareció en pantalla el elemento {locator}.")
+
+    def seleccionar_todas_coberturas_y_continuar(self):
+        """En la ventana 'Cobertura seleccionada' marca todas las coberturas y da clic en 'Continuar'."""
+        # Esperamos a que la ventana de coberturas esté VISIBLE (no solo presente en el código)
+        self._ubicar_contexto_de(self.BTN_CONTINUAR_COBERTURAS)
+        print("[QA Info] Ventana 'Cobertura seleccionada' visible.")
+
+        chk_todos = self.wait.until(EC.presence_of_element_located(self.CHK_TODAS_COBERTURAS))
         if not chk_todos.is_selected():
             self.driver.execute_script("arguments[0].click();", chk_todos)
-            print("[QA Info] Checkbox maestro 'chkTodos' marcado.")
-            time.sleep(2.5)  # Espera vital para el PostBack de ASP.NET
+            self.esperar_spinner()
+            time.sleep(1.5)  # Margen para el PostBack de ASP.NET (servidor lento)
 
-        wait_modal.until(EC.element_to_be_clickable((By.ID, "MuestraCotizacion")))
-        self.click_js((By.ID, "MuestraCotizacion"))
-        print("[QA Info] Modal de coberturas cerrado.")
+        chk_todos = self.wait.until(EC.presence_of_element_located(self.CHK_TODAS_COBERTURAS))
+        assert chk_todos.is_selected(), "Error de Negocio: No se pudieron marcar todas las coberturas."
+        print("[QA Info] Todas las coberturas marcadas.")
 
-        # 4. Botón Cerrar final
+        boton = WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
+        self.driver.execute_script("arguments[0].click();", boton)
+        print("[QA Info] Clic en 'Continuar'.")
+        self.esperar_spinner()
+
+        # La ventana de coberturas debe cerrarse para ver los botones del resumen
+        WebDriverWait(self.driver, 60).until(EC.invisibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
+        print("[QA Info] Ventana de coberturas cerrada. Resumen con botones disponible.")
+
+    def validar_resumen_cotizacion(self):
+        """Verifica que seguimos en la pantalla de resumen de la cotización (resumen.aspx)."""
+        url = self.driver.current_url
+        assert "resumen.aspx" in url.lower(), \
+            f"Error de Negocio: No se está en la pantalla de resumen. URL actual: {url}"
+        print(f"[QA Info] Cotización generada. Resumen: {url}")
+
+    def cerrar_desde_resumen(self):
+        """Hace clic en el botón 'Cerrar' de la pantalla de resumen."""
         print("[QA Info] Cerrando cotización actual...")
-        WebDriverWait(self.driver, 15).until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']"))
-        )
+        self._ubicar_contexto_de(self.BTN_CERRAR_RESUMEN, timeout=30)
+        boton = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.BTN_CERRAR_RESUMEN))
         time.sleep(2)
-        self.click_js((By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']"))
+        self.driver.execute_script("arguments[0].click();", boton)
         print("[QA Info] Proceso de cotización finalizado.")
 
     def volver_a_ventana_principal(self):

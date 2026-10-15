@@ -48,11 +48,23 @@ def step_diligenciar_cotizacion(context):
 
 @step('hace clic en el botón "Cotizar"')
 def step_cotizar(context):
-    context.pagina_cotizacion.cotizar_y_cerrar()
+    context.pagina_cotizacion.clic_cotizar()
+
+
+@step('selecciona todas las coberturas y da clic en "Continuar"')
+def step_seleccionar_coberturas(context):
+    context.pagina_cotizacion.seleccionar_todas_coberturas_y_continuar()
 
 
 @step('el sistema debe generar la cotización correctamente')
 def step_validar_cotizacion(context):
+    context.pagina_cotizacion.validar_resumen_cotizacion()
+
+
+@step('cierra la cotización con el botón "Cerrar"')
+def step_cerrar_cotizacion(context):
+    context.pagina_cotizacion.cerrar_desde_resumen()
+
     print("[QA INFO] Devolviendo el foco a la ventana principal...")
     context.pagina_cotizacion.volver_a_ventana_principal()
     print("[QA Info] ¡Prueba finalizada con éxito!")

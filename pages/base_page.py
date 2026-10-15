@@ -77,6 +77,19 @@ class BasePage:
         except Exception:
             print("[QA Info] El servidor sigue procesando; se continúa con el flujo.")
 
+    SPINNER_CARGANDO = (By.ID, "UpdateProgress1")
+
+    def esperar_spinner(self, timeout=60):
+        """Espera a que desaparezca el spinner azul de 'cargando' (UpdateProgress1) del portal.
+        Si el spinner no existe en la pantalla actual, continúa de inmediato."""
+        time.sleep(0.5)  # Da tiempo a que el spinner alcance a aparecer
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.invisibility_of_element_located(self.SPINNER_CARGANDO)
+            )
+        except Exception:
+            print("[QA Info] El spinner de carga sigue visible; se continúa con el flujo.")
+
     def entrar_iframe_contenido(self, timeout=15):
         """Vuelve al documento principal y entra al iframe 'contenido' donde se renderizan los módulos."""
         self.driver.switch_to.default_content()

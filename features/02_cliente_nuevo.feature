@@ -14,4 +14,6 @@ Característica: Flujo Completo de Registro y Cotización en el Portal
     Y el sistema debe abrir la pantalla "Cotizador en Línea"
     Y diligencia la información requerida para la cotización
     Y hace clic en el botón "Cotizar"
+    Y selecciona todas las coberturas y da clic en "Continuar"
     Entonces el sistema debe generar la cotización correctamente
+    Y cierra la cotización con el botón "Cerrar"
