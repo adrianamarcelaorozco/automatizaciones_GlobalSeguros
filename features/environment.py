@@ -18,7 +18,7 @@ def before_scenario(context, scenario):
     """Se ejecuta antes de cada escenario individual."""
     try:
         print("[QA Info] Intentando conectar al portal de Global Seguros...")
-        context.driver.get("http://10.1.2.33/PortalEM/ingreso-usuarios.aspx")
+        context.driver.get("http://10.1.2.33/Portal/ingreso-usuarios.aspx")
     except Exception as e:
         print(f"\n❌ [ERROR DE RED] No se pudo cargar el portal. Verifica que la VPN esté conectada.")
         raise e

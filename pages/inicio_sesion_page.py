@@ -7,7 +7,7 @@ from pages.base_page import BasePage
 
 class LoginPage(BasePage):
 
-    URL = "http://10.1.2.33/PortalEM/ingreso-usuarios.aspx"
+    URL = "http://10.1.2.33/Portal/ingreso-usuarios.aspx"
 
     # Locators (IDs limpios, rápidos y estables)
     BTN_CANCELAR = (By.ID, "btnCancelar")
