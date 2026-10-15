@@ -7,6 +7,7 @@ import random # Asegúrate de que esto esté al inicio del archivo si no lo ten�
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
 
 
 class CotizacionPage(BasePage):
@@ -477,26 +478,61 @@ class CotizacionPage(BasePage):
         
         print("[QA Info] Ventana de cotización cerrada. Foco regresado a la ventana principal.")
 
-def seleccionar_cobertura_y_cerrar(self):
-        """
-        Marca el checkbox de selección de la cobertura y hace clic en cerrar/continuar una sola vez.
-        """
-        print("[QA Info] Seleccionando cobertura y cerrando modal...")
-        
-        # 1. Localizar y marcar el checkbox usando JS (evita problemas de interceptación de clic)
-        checkbox_id = "gvCoberturasCampleto_chkSeleccionar_0"
-        checkbox = self.wait.until(EC.presence_of_element_located((By.ID, checkbox_id)))
-        
-        # Verificamos si ya está marcado antes de hacer clic para evitar desmarcarlo
-        if not checkbox.is_selected():
-            self.driver.execute_script("arguments[0].click();", checkbox)
-            time.sleep(1.5)  # Breve pausa para la respuesta del PostBack/ASP.NET
+    def ubicar_formulario_cotizador(self):
+        """Se asegura de estar en la ventana del cotizador y dentro de su iframe (si lo tiene)."""
+        ventanas = self.driver.window_handles
+        if len(ventanas) > 1:
+            self.driver.switch_to.window(ventanas[-1])
 
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn_cerrar)
+        iframes = self.driver.find_elements(By.TAG_NAME, "iframe")
+        if iframes:
+            self.driver.switch_to.frame(iframes[0])
 
-        # 2. Localizar y hacer clic en el botón Cerrar/MuestraCotizacion una única vez
-        btn_cerrar = self.wait.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
-        time.sleep(5)  # Breve pausa para la respuesta del PostBack/ASP.NET
-        self.driver.execute_script("arguments[0].click();", btn_cerrar)
-        
-        print("[QA Info] Cobertura seleccionada y modal cerrado.")
+    def cotizar_y_cerrar(self):
+        """Cierra el modal de cálculo de año (si aparece), cotiza, acepta todas las coberturas
+        y cierra la cotización."""
+        # 1. Modal de cálculo de año (opcional)
+        try:
+            btn_aceptar = self.wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), 'Aceptar') or @value='Aceptar']"))
+            )
+            self.driver.execute_script("arguments[0].click();", btn_aceptar)
+            print("[QA Info] Modal de cálculo cerrado.")
+            time.sleep(1.5)
+        except TimeoutException:
+            print("[QA Info] No apareció modal de cálculo previo.")
+
+        # 2. Botón Cotizar
+        print("[QA Info] Buscando el botón 'Cotizar'...")
+        self.wait.until(EC.element_to_be_clickable((By.ID, "Cotizar")))
+        self.click_js((By.ID, "Cotizar"))
+        print("[QA Info] Clic en botón Cotizar ejecutado.")
+
+        # 3. Modal de coberturas
+        wait_modal = WebDriverWait(self.driver, 30)
+        wait_modal.until(EC.presence_of_element_located((By.ID, "MuestraCotizacion")))
+        print("[QA Info] Modal de coberturas detectado.")
+
+        chk_todos = wait_modal.until(EC.presence_of_element_located((By.ID, "gvCoberturasCampleto_chkTodos")))
+        if not chk_todos.is_selected():
+            self.driver.execute_script("arguments[0].click();", chk_todos)
+            print("[QA Info] Checkbox maestro 'chkTodos' marcado.")
+            time.sleep(2.5)  # Espera vital para el PostBack de ASP.NET
+
+        wait_modal.until(EC.element_to_be_clickable((By.ID, "MuestraCotizacion")))
+        self.click_js((By.ID, "MuestraCotizacion"))
+        print("[QA Info] Modal de coberturas cerrado.")
+
+        # 4. Botón Cerrar final
+        print("[QA Info] Cerrando cotización actual...")
+        WebDriverWait(self.driver, 15).until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']"))
+        )
+        time.sleep(2)
+        self.click_js((By.XPATH, "//input[@name='Cerrar' or @id='Cerrar']"))
+        print("[QA Info] Proceso de cotización finalizado.")
+
+    def volver_a_ventana_principal(self):
+        ventanas = self.driver.window_handles
+        if len(ventanas) > 1:
+            self.driver.switch_to.window(ventanas[0])

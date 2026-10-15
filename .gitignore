@@ -2,3 +2,7 @@
 *.pyc
 .pytest_cache/
 venv/
+# Evidencias de depuración generadas al correr las pruebas
+debug_*.html
+fail_*.png
+reports/

@@ -68,6 +68,12 @@ class BusquedaClientePage(BasePage):
         print(f"[QA Info] Búsqueda ejecutada para: {tipo_documento.name} - {numero_documento}")
         time.sleep(1.5)
 
+    def validar_nuevo_cliente_habilitado(self):
+        """Verifica que tras la búsqueda (documento inexistente) aparezca habilitado el botón 'Nuevo Cliente'."""
+        boton = self.wait.until(EC.visibility_of_element_located(self.BOTON_NUEVO_CLIENTE))
+        assert boton.is_enabled(), "Error de Negocio: El botón 'Nuevo Cliente' no está habilitado."
+        print("[QA Info] Opción de registrar nuevo cliente habilitada.")
+
     def click_nuevo_cliente(self):
         """Avanza al formulario de creación."""
         # OPTIMIZACIÓN: Delegamos el clic dinámico (normal o JS) a la BasePage
@@ -122,27 +128,15 @@ class BusquedaClientePage(BasePage):
         self.driver.execute_script("arguments[0].blur();", campo_form_num)
         time.sleep(1.0)
 
-        # 3. Forzar desbloqueo y llenado de datos de identidad (Campos deshabilitados de ASPX)
-        input_nombres = self.driver.find_element(*self.FORM_NOMBRES)
-        input_ape1 = self.driver.find_element(*self.FORM_APELLIDO1)
-        input_ape2 = self.driver.find_element(*self.FORM_APELLIDO2)
-        input_fecha = self.driver.find_element(*self.FORM_FECHA_NACIMIENTO)
-        input_edad = self.driver.find_element(*self.FORM_EDAD)
-        
-        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].value = arguments[1];", input_nombres, nombre_aleatorio)
-        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].value = arguments[1];", input_ape1, apellido1_aleatorio)
-        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].value = arguments[1];", input_ape2, apellido2_aleatorio)
-        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].value = arguments[1];", input_fecha, fecha_str)
-        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].value = arguments[1];", input_edad, str(edad_calculada))
+        # Al salir del número de documento el portal consulta al servidor y recarga el formulario.
+        # Esperamos a que termine; si no, la recarga borra los datos que llenemos después.
+        self.esperar_postback()
 
-        # 4. Desbloqueo y selección de Radio Button de Sexo
-        locator_sexo = self.RADIO_MASCULINO if sexo == "M" else self.RADIO_FEMENINO
-        radio_sexo_elem = self.driver.find_element(*locator_sexo)
-        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].click();", radio_sexo_elem)
+        datos_identidad = (nombre_aleatorio, apellido1_aleatorio, apellido2_aleatorio,
+                           fecha_str, edad_calculada, sexo, correo, celular)
 
-        # 5. Llenar Correo Electrónico y Celular
-        self.type_text(self.CAMPO_CORREO, correo)
-        self.type_text(self.CAMPO_CELULAR, celular)
+        # 3, 4 y 5. Identidad, sexo, correo y celular
+        self._llenar_identidad_y_contacto(*datos_identidad)
 
         # 6. Definición del Departamento final
         if departamento == "ALEATORIO":
@@ -182,10 +176,48 @@ class BusquedaClientePage(BasePage):
         opcion_ciu.click()
         time.sleep(0.5)
 
+        # Verificación: si una recarga tardía borró los datos, se vuelven a llenar
+        self._verificar_datos_antes_de_grabar(*datos_identidad)
+
         # 8. Guardar Formulario
         # OPTIMIZACIÓN: Delegamos el clic robusto a la BasePage
         self.click(self.BOTON_GRABAR)
         print(f"[QA Info] Registro enviado para {nombre_aleatorio} {apellido1_aleatorio}.")
+
+    def _llenar_identidad_y_contacto(self, nombre, apellido1, apellido2, fecha_str, edad, sexo, correo, celular):
+        """Llena nombres, apellidos, fecha, edad (campos deshabilitados de ASPX), sexo, correo y celular."""
+        campos = [
+            (self.FORM_NOMBRES, nombre),
+            (self.FORM_APELLIDO1, apellido1),
+            (self.FORM_APELLIDO2, apellido2),
+            (self.FORM_FECHA_NACIMIENTO, fecha_str),
+            (self.FORM_EDAD, str(edad)),
+        ]
+        for locator, valor in campos:
+            elemento = self.driver.find_element(*locator)
+            self.driver.execute_script(
+                "arguments[0].removeAttribute('disabled'); arguments[0].value = arguments[1];", elemento, valor
+            )
+
+        locator_sexo = self.RADIO_MASCULINO if sexo == "M" else self.RADIO_FEMENINO
+        radio_sexo_elem = self.driver.find_element(*locator_sexo)
+        self.driver.execute_script("arguments[0].removeAttribute('disabled'); arguments[0].click();", radio_sexo_elem)
+
+        self.type_text(self.CAMPO_CORREO, correo)
+        self.type_text(self.CAMPO_CELULAR, celular)
+
+    def _verificar_datos_antes_de_grabar(self, nombre, apellido1, apellido2, fecha_str, edad, sexo, correo, celular):
+        """Revisa que los datos sigan escritos justo antes de grabar; si se borraron, los vuelve a llenar."""
+        self.esperar_postback()
+        nombres_actual = self.driver.find_element(*self.FORM_NOMBRES).get_attribute("value")
+        correo_actual = self.driver.find_element(*self.CAMPO_CORREO).get_attribute("value")
+        locator_sexo = self.RADIO_MASCULINO if sexo == "M" else self.RADIO_FEMENINO
+        sexo_marcado = self.driver.find_element(*locator_sexo).is_selected()
+
+        if not nombres_actual or not correo_actual or not sexo_marcado:
+            print("[QA Info] Una recarga del servidor borró datos del formulario. Se vuelven a llenar...")
+            self._llenar_identidad_y_contacto(nombre, apellido1, apellido2, fecha_str, edad, sexo, correo, celular)
+            time.sleep(1.0)
 
     def obtener_mensaje_exito_y_cerrar(self) -> str:
         # Aumentamos el tiempo de espera específicamente para esta confirmación
