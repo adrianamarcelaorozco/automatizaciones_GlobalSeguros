@@ -1,3 +1,4 @@
+from config import PORTAL_URL
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -18,7 +19,7 @@ def before_scenario(context, scenario):
     """Se ejecuta antes de cada escenario individual."""
     try:
         print("[QA Info] Intentando conectar al portal de Global Seguros...")
-        context.driver.get("http://10.1.2.33/Portal/ingreso-usuarios.aspx")
+        context.driver.get(PORTAL_URL)
     except Exception as e:
         print(f"\n❌ [ERROR DE RED] No se pudo cargar el portal. Verifica que la VPN esté conectada.")
         raise e

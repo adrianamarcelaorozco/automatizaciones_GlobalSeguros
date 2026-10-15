@@ -68,6 +68,12 @@ class BusquedaClientePage(BasePage):
         print(f"[QA Info] Búsqueda ejecutada para: {tipo_documento.name} - {numero_documento}")
         time.sleep(1.5)
 
+    def validar_nuevo_cliente_habilitado(self):
+        """Verifica que tras la búsqueda (documento inexistente) aparezca habilitado el botón 'Nuevo Cliente'."""
+        boton = self.wait.until(EC.visibility_of_element_located(self.BOTON_NUEVO_CLIENTE))
+        assert boton.is_enabled(), "Error de Negocio: El botón 'Nuevo Cliente' no está habilitado."
+        print("[QA Info] Opción de registrar nuevo cliente habilitada.")
+
     def click_nuevo_cliente(self):
         """Avanza al formulario de creación."""
         # OPTIMIZACIÓN: Delegamos el clic dinámico (normal o JS) a la BasePage

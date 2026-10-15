@@ -53,6 +53,21 @@ class BasePage:
         option.click()
         return option
 
+    def click_js(self, locator, timeout=15):
+        """Espera la presencia del elemento, lo centra en pantalla y hace clic vía JavaScript.
+        Útil en los modales ASP.NET donde el clic normal queda interceptado."""
+        element = WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        self.driver.execute_script("arguments[0].click();", element)
+        return element
+
+    def entrar_iframe_contenido(self, timeout=15):
+        """Vuelve al documento principal y entra al iframe 'contenido' donde se renderizan los módulos."""
+        self.driver.switch_to.default_content()
+        WebDriverWait(self.driver, timeout).until(
+            EC.frame_to_be_available_and_switch_to_it((By.ID, "contenido"))
+        )
+
     def scroll_to(self, locator):
         """Desplaza la vista hacia el elemento para evitar errores de ClickIntercepted."""
         element = self.wait.until(EC.presence_of_element_located(locator))
