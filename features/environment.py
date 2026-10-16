@@ -17,6 +17,17 @@ def before_all(context):
 
 def before_scenario(context, scenario):
     """Se ejecuta antes de cada escenario individual."""
+    # Si un escenario anterior dejó abierta la ventana del cotizador, se cierra
+    # para que este escenario arranque limpio en la ventana principal.
+    try:
+        ventanas = context.driver.window_handles
+        for extra in ventanas[1:]:
+            context.driver.switch_to.window(extra)
+            context.driver.close()
+        context.driver.switch_to.window(ventanas[0])
+    except Exception:
+        pass
+
     try:
         print("[QA Info] Intentando conectar al portal de Global Seguros...")
         context.driver.get(PORTAL_URL)
