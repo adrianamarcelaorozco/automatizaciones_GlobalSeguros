@@ -231,7 +231,7 @@ class CotizacionPage(BasePage):
         self._entrar_al_iframe_si_existe()
         
         try:
-            self.wait.until(EC.presence_of_element_located((By.ID, "ApoyoInstitucional")))
+            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.ID, "ApoyoInstitucional")))
             print("[QA Info] Cotizador estable y elemento 'ApoyoInstitucional' encontrado.")
         except Exception:
             print("[QA Error] El elemento 'ApoyoInstitucional' NO se encontró. Generando archivo de depuración...")
@@ -255,7 +255,14 @@ class CotizacionPage(BasePage):
         """Busca IFrames o Frames tradicionales y cambia el foco si es necesario."""
         print("[QA Info] Esperando a que el navegador reporte carga completa del HTML...")
         # Esperamos a que el estado del documento sea 'complete' a nivel de JavaScript
-        self.wait.until(lambda d: d.execute_script('return document.readyState') == 'complete')
+        # El servidor es lento: damos hasta 90 segundos. Si aun así no termina, se continúa y
+        # el paso siguiente espera el campo 'ApoyoInstitucional', que es lo que realmente importa.
+        try:
+            WebDriverWait(self.driver, 90).until(
+                lambda d: d.execute_script('return document.readyState') == 'complete'
+            )
+        except TimeoutException:
+            print("[QA Info] La página del cotizador sigue cargando después de 90 s; se continúa.")
         time.sleep(3) # Pausa estratégica para dar tiempo a renderizados de Materialize/JS
         
         print("[QA Info] Buscando iframes o frames en la pantalla del cotizador...")
