@@ -209,9 +209,15 @@ class CotizacionPage(BasePage):
     def cambiar_a_ventana_cotizador(self):
         print("[QA Info] Esperando a que se abra la nueva pestaña/ventana...")
         antes = getattr(self, "_ventanas_antes", set())
-        WebDriverWait(self.driver, 30).until(
-            lambda d: [h for h in d.window_handles if h not in antes] if antes else len(d.window_handles) > 1
-        )
+        try:
+            WebDriverWait(self.driver, 30).until(
+                lambda d: [h for h in d.window_handles if h not in antes] if antes else len(d.window_handles) > 1
+            )
+        except TimeoutException:
+            # El portal puede abrir el cotizador en la misma ventana que ya estaba abierta
+            if len(self.driver.window_handles) < 2:
+                raise AssertionError("Error de Negocio: No se abrió la ventana del Cotizador en Línea.")
+            print("[QA Info] No apareció ventana nueva; se usa la ventana del cotizador ya abierta.")
         nuevas = [h for h in self.driver.window_handles if h not in antes]
         self.driver.switch_to.window(nuevas[-1] if nuevas else self.driver.window_handles[-1])
 
@@ -231,10 +237,10 @@ class CotizacionPage(BasePage):
         self._entrar_al_iframe_si_existe()
         
         try:
-            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.ID, "ApoyoInstitucional")))
-            print("[QA Info] Cotizador estable y elemento 'ApoyoInstitucional' encontrado.")
+            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located(self.BTN_COTIZAR_COTIZADOR))
+            print("[QA Info] Cotizador estable: botón 'Cotizar' encontrado.")
         except Exception:
-            print("[QA Error] El elemento 'ApoyoInstitucional' NO se encontró. Generando archivo de depuración...")
+            print("[QA Error] El botón 'Cotizar' del cotizador NO se encontró. Generando archivo de depuración...")
             # TRUCO DE QA: Guardamos lo que Selenium está viendo en ese exacto momento para analizarlo
             try:
                 with open("debug_pantalla_cotizador.html", "w", encoding="utf-8") as f:
@@ -677,11 +683,18 @@ class CotizacionPage(BasePage):
         self.driver.execute_script("arguments[0].click();", boton)
         print("[QA Info] Clic en 'Volver a Cotizar'.")
 
-        # El portal cierra la ventana del cotizador y regresa a la ventana principal
+        # El portal regresa a la ventana principal pero deja abierta la ventana del cotizador.
+        # Esperamos a que procese el clic y la cerramos, para que el siguiente producto abra una nueva.
+        self.esperar_spinner()
         try:
-            WebDriverWait(self.driver, 30).until(EC.number_of_windows_to_be(1))
+            WebDriverWait(self.driver, 10).until(EC.number_of_windows_to_be(1))
         except TimeoutException:
-            print("[QA Info] La ventana del cotizador sigue abierta; se continúa en la ventana principal.")
+            principal = self.driver.window_handles[0]
+            for ventana in self.driver.window_handles[1:]:
+                self.driver.switch_to.window(ventana)
+                self.driver.close()
+            self.driver.switch_to.window(principal)
+            print("[QA Info] Ventana anterior del cotizador cerrada.")
 
         self.volver_a_ventana_principal()
         self.esperar_postback()
