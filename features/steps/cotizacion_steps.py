@@ -30,8 +30,8 @@ def step_validar_cotizador(context):
     time.sleep(1)
 
 
-@step('diligencia la información requerida para la cotización')
-def step_diligenciar_cotizacion(context):
+def _diligenciar_cotizacion(context, anios_adicionales=0):
+    """Llena beneficiario, colegio, producto y año de ingreso en el cotizador."""
     pagina = context.pagina_cotizacion
     pagina.ubicar_formulario_cotizador()
     pagina.asegurar_seccion_beneficiario_visible()
@@ -43,7 +43,17 @@ def step_diligenciar_cotizacion(context):
         curso_val="TERCERO",
     )
     pagina.seleccionar_producto_materialize("Global Garantizada 360")
-    pagina.calcular_y_confirmar_anio_ingreso()
+    pagina.calcular_y_confirmar_anio_ingreso(anios_adicionales=anios_adicionales)
+
+
+@step('diligencia la información requerida para la cotización')
+def step_diligenciar_cotizacion(context):
+    _diligenciar_cotizacion(context)
+
+
+@step('diligencia la información de la cotización sumando {anios:d} al año de ingreso calculado')
+def step_diligenciar_cotizacion_anio_distinto(context, anios):
+    _diligenciar_cotizacion(context, anios_adicionales=anios)
 
 
 @step('hace clic en el botón "Cotizar"')
@@ -54,6 +64,18 @@ def step_cotizar(context):
 @step('selecciona todas las coberturas y da clic en "Continuar"')
 def step_seleccionar_coberturas(context):
     context.pagina_cotizacion.seleccionar_todas_coberturas_y_continuar()
+
+
+@step('selecciona solo las coberturas "{coberturas}" y da clic en "Continuar"')
+def step_seleccionar_algunas_coberturas(context, coberturas):
+    # Las coberturas se escriben separadas por coma en el .feature
+    lista = [c.strip() for c in coberturas.split(",") if c.strip()]
+    context.pagina_cotizacion.seleccionar_solo_coberturas_y_continuar(lista)
+
+
+@step('da clic en el botón "Volver a Cotizar"')
+def step_volver_a_cotizar(context):
+    context.pagina_cotizacion.volver_a_cotizar()
 
 
 @step('el sistema debe generar la cotización correctamente')

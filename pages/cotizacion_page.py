@@ -208,8 +208,12 @@ class CotizacionPage(BasePage):
 
     def cambiar_a_ventana_cotizador(self):
         print("[QA Info] Esperando a que se abra la nueva pestaña/ventana...")
-        self.wait.until(lambda d: len(d.window_handles) > 1)
-        self.driver.switch_to.window(self.driver.window_handles[-1])
+        antes = getattr(self, "_ventanas_antes", set())
+        WebDriverWait(self.driver, 30).until(
+            lambda d: [h for h in d.window_handles if h not in antes] if antes else len(d.window_handles) > 1
+        )
+        nuevas = [h for h in self.driver.window_handles if h not in antes]
+        self.driver.switch_to.window(nuevas[-1] if nuevas else self.driver.window_handles[-1])
 
         # El portal abre el cotizador en una ventana pequeña; la maximizamos para ver todo el flujo
         try:
@@ -242,6 +246,8 @@ class CotizacionPage(BasePage):
             time.sleep(2) # Pausa de seguridad antes de que el script falle inevitablemente en el siguiente paso
 
     def seleccionar_global_educacion_360(self):
+        # Guardamos las ventanas abiertas para reconocer después cuál es la NUEVA ventana del cotizador
+        self._ventanas_antes = set(self.driver.window_handles)
         btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, '//a[contains(.,"Global Educacion - Garantizada 360")]')))
         self.driver.execute_script("arguments[0].click();", btn)
 
@@ -430,7 +436,11 @@ class CotizacionPage(BasePage):
         else:
             raise Exception(f"Fallo al seleccionar '{texto_producto}' mediante inyección JS.")
         
-    def calcular_y_confirmar_anio_ingreso(self):
+    def calcular_y_confirmar_anio_ingreso(self, anios_adicionales=0,
+                                          observacion="Año de ingreso ajustado en pruebas automatizadas"):
+        """Da clic en 'Calcular' y confirma el año de ingreso a la universidad.
+        Con anios_adicionales > 0 confirma un año mayor al calculado y llena 'Observaciones',
+        porque el portal pide aclarar el motivo cuando los años son distintos."""
         print("[QA Info] Iniciando cálculo de maduración...")
         
         # 1. Clic en el botón Calcular
@@ -446,12 +456,13 @@ class CotizacionPage(BasePage):
         self.wait.until(campo_calculado_tiene_valor)
         
         # 3. Obtener el valor calculado
-        anio_calculado = self.driver.find_element(By.ID, "AnioMaduracionCalc").get_attribute("value")
-        print(f"[QA Info] Año calculado obtenido: {anio_calculado}")
-        
+        anio_calculado = self.driver.find_element(By.ID, "AnioMaduracionCalc").get_attribute("value").strip()
+        anio_confirmado = str(int(anio_calculado) + anios_adicionales)
+        print(f"[QA Info] Año calculado: {anio_calculado} | Año a confirmar: {anio_confirmado}")
+
         # 4. Inyectar el valor en el campo de confirmación
         campo_confirmacion = self.driver.find_element(By.ID, "AnioMaduracion")
-        self.driver.execute_script(f"arguments[0].value = '{anio_calculado}';", campo_confirmacion)
+        self.driver.execute_script("arguments[0].value = arguments[1];", campo_confirmacion, anio_confirmado)
         
         # 5. Disparar eventos para que el formulario valide la igualdad
         self.driver.execute_script("""
@@ -460,6 +471,14 @@ class CotizacionPage(BasePage):
             el.dispatchEvent(new Event('change', { bubbles: true }));
             el.dispatchEvent(new Event('blur', { bubbles: true }));
         """)
+        # 6. Si el año confirmado es distinto al calculado, el portal pide aclarar el motivo
+        if anios_adicionales:
+            campo_obs = self.driver.find_element(By.ID, "Observaciones")
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", campo_obs)
+            campo_obs.clear()
+            campo_obs.send_keys(observacion)
+            print(f"[QA Info] Observación registrada: '{observacion}'")
+
         print("[QA Info] Año de ingreso confirmado correctamente.")
 
     
@@ -550,11 +569,23 @@ class CotizacionPage(BasePage):
         except TimeoutException:
             raise AssertionError(f"Error de Negocio: No apareció en pantalla el elemento {locator}.")
 
-    def seleccionar_todas_coberturas_y_continuar(self):
-        """En la ventana 'Cobertura seleccionada' marca todas las coberturas y da clic en 'Continuar'."""
-        # Esperamos a que la ventana de coberturas esté VISIBLE (no solo presente en el código)
+    def _esperar_ventana_coberturas(self):
+        """Espera a que la ventana 'Cobertura seleccionada' esté VISIBLE (no solo presente en el código)."""
         self._ubicar_contexto_de(self.BTN_CONTINUAR_COBERTURAS)
         print("[QA Info] Ventana 'Cobertura seleccionada' visible.")
+
+    def _clic_continuar_coberturas(self):
+        """Da clic en 'Continuar' y espera a que se cierre la ventana de coberturas."""
+        boton = WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
+        self.driver.execute_script("arguments[0].click();", boton)
+        print("[QA Info] Clic en 'Continuar'.")
+        self.esperar_spinner()
+        WebDriverWait(self.driver, 60).until(EC.invisibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
+        print("[QA Info] Ventana de coberturas cerrada. Resumen con botones disponible.")
+
+    def seleccionar_todas_coberturas_y_continuar(self):
+        """En la ventana 'Cobertura seleccionada' marca todas las coberturas y da clic en 'Continuar'."""
+        self._esperar_ventana_coberturas()
 
         chk_todos = self.wait.until(EC.presence_of_element_located(self.CHK_TODAS_COBERTURAS))
         if not chk_todos.is_selected():
@@ -566,14 +597,47 @@ class CotizacionPage(BasePage):
         assert chk_todos.is_selected(), "Error de Negocio: No se pudieron marcar todas las coberturas."
         print("[QA Info] Todas las coberturas marcadas.")
 
-        boton = WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
-        self.driver.execute_script("arguments[0].click();", boton)
-        print("[QA Info] Clic en 'Continuar'.")
-        self.esperar_spinner()
+        self._clic_continuar_coberturas()
 
-        # La ventana de coberturas debe cerrarse para ver los botones del resumen
-        WebDriverWait(self.driver, 60).until(EC.invisibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
-        print("[QA Info] Ventana de coberturas cerrada. Resumen con botones disponible.")
+    # Cada fila de la tabla tiene su casilla: gvCoberturasCampleto_chkSeleccionar_0, _1, _2...
+    CHKS_COBERTURA = (By.XPATH, "//input[starts-with(@id, 'gvCoberturasCampleto_chkSeleccionar_')]")
+
+    def _coberturas_en_pantalla(self):
+        """Devuelve una lista (nombre de la cobertura, casilla) leída de la tabla actual."""
+        filas = []
+        for chk in self.driver.find_elements(*self.CHKS_COBERTURA):
+            nombre = chk.find_element(By.XPATH, "./ancestor::tr[1]").text.split("$")[0].strip()
+            filas.append((nombre, chk))
+        return filas
+
+    def seleccionar_solo_coberturas_y_continuar(self, coberturas_deseadas):
+        """Deja marcadas SOLO las coberturas indicadas (por nombre) y da clic en 'Continuar'."""
+        self._esperar_ventana_coberturas()
+        deseadas = [c.strip().lower() for c in coberturas_deseadas]
+
+        nombres = [n for n, _ in self._coberturas_en_pantalla()]
+        print(f"[QA Info] Coberturas disponibles: {nombres}")
+        faltantes = [d for d in deseadas if not any(d in n.lower() for n in nombres)]
+        assert not faltantes, f"Error de Datos: No existen en pantalla las coberturas {faltantes}."
+
+        # Cada clic hace un PostBack que vuelve a dibujar la tabla, por eso se relee en cada vuelta
+        for indice in range(len(nombres)):
+            nombre, chk = self._coberturas_en_pantalla()[indice]
+            debe_estar_marcada = any(d in nombre.lower() for d in deseadas)
+            if chk.is_selected() != debe_estar_marcada:
+                self.driver.execute_script("arguments[0].click();", chk)
+                print(f"[QA Info] {'Marcando' if debe_estar_marcada else 'Desmarcando'}: {nombre}")
+                self.esperar_spinner()
+                time.sleep(1.5)  # Margen para el PostBack de ASP.NET (servidor lento)
+
+        # Verificación final: quedaron marcadas exactamente las pedidas
+        for nombre, chk in self._coberturas_en_pantalla():
+            debe_estar_marcada = any(d in nombre.lower() for d in deseadas)
+            assert chk.is_selected() == debe_estar_marcada, \
+                f"Error de Negocio: La cobertura '{nombre}' no quedó en el estado esperado."
+        print(f"[QA Info] Coberturas seleccionadas: {coberturas_deseadas}")
+
+        self._clic_continuar_coberturas()
 
     def validar_resumen_cotizacion(self):
         """Verifica que seguimos en la pantalla de resumen de la cotización (resumen.aspx)."""
@@ -593,6 +657,29 @@ class CotizacionPage(BasePage):
         time.sleep(3)
         self.driver.execute_script("arguments[0].click();", boton)
         print("[QA Info] Proceso de cotización finalizado.")
+
+    BTN_VOLVER_COTIZAR = (By.ID, "VolverCotizar")
+
+    def volver_a_cotizar(self):
+        """En el resumen da clic en 'Volver a Cotizar' y regresa a la pantalla principal del portal
+        (Opciones de cotización), dentro del iframe 'contenido'."""
+        self._ubicar_contexto_de(self.BTN_VOLVER_COTIZAR, timeout=30)
+        boton = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable(self.BTN_VOLVER_COTIZAR))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", boton)
+        time.sleep(2)  # Pausa visual para ver el resumen antes de salir
+        self.driver.execute_script("arguments[0].click();", boton)
+        print("[QA Info] Clic en 'Volver a Cotizar'.")
+
+        # El portal cierra la ventana del cotizador y regresa a la ventana principal
+        try:
+            WebDriverWait(self.driver, 30).until(EC.number_of_windows_to_be(1))
+        except TimeoutException:
+            print("[QA Info] La ventana del cotizador sigue abierta; se continúa en la ventana principal.")
+
+        self.volver_a_ventana_principal()
+        self.esperar_postback()
+        self.entrar_iframe_contenido()
+        print("[QA Info] De regreso en la pantalla principal del portal.")
 
     def volver_a_ventana_principal(self):
         ventanas = self.driver.window_handles
