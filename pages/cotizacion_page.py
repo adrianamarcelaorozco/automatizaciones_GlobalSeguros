@@ -53,7 +53,7 @@ class CotizacionPage(BasePage):
             print(f"[QA Error] Excepción al buscar resultado: {e}")
             return None
         
-    def diligenciar_datos_aleatorios_beneficiario(self):
+    def diligenciar_datos_aleatorios_beneficiario(self, fecha_nacimiento="09/09/2017"):
         """
         Llena el formulario usando una técnica de inyección segura que evita 
         que los campos se limpien al perder el foco.
@@ -66,7 +66,7 @@ class CotizacionPage(BasePage):
             "NomBen": random.choice(["Mateo", "Valeria", "Santiago", "Camila"]),
             "ApeBen": random.choice(["Garcia", "Restrepo", "Cardona"]),
             "ApeBen2": random.choice(["Gaviria", "Zapata", "Orozco"]),
-            "FecNacimientoBen": "09/09/2017"
+            "FecNacimientoBen": fecha_nacimiento
         }
         
         # Inyectamos valores uno a uno sin disparar eventos destructivos inmediatamente
@@ -495,6 +495,14 @@ class CotizacionPage(BasePage):
         print("[QA Info] Año de ingreso confirmado correctamente.")
 
     
+    def escribir_observaciones(self, texto):
+        """Escribe el texto en el campo 'Observaciones' del cotizador."""
+        campo = self.wait.until(EC.presence_of_element_located((By.ID, "Observaciones")))
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", campo)
+        campo.clear()
+        campo.send_keys(texto)
+        print(f"[QA Info] Observaciones: '{texto}'")
+
     def cerrar_cotizacion(self):
         print("[QA Info] Cerrando ventana de cotización...")
         
