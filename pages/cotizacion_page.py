@@ -599,6 +599,14 @@ class CotizacionPage(BasePage):
     def seleccionar_todas_coberturas_y_continuar(self):
         """En la ventana 'Cobertura seleccionada' marca todas las coberturas y da clic en 'Continuar'."""
         self._esperar_ventana_coberturas()
+        time.sleep(1.5)  # Margen para que la tabla de coberturas termine de dibujarse
+
+        # Según el cliente y el beneficiario, el portal puede no ofrecer coberturas adicionales
+        # (solo el Amparo básico). En ese caso no hay nada que marcar y se continúa.
+        if not self.driver.find_elements(*self.CHK_TODAS_COBERTURAS):
+            print("[QA Info] No hay coberturas adicionales para este caso (solo Amparo básico).")
+            self._clic_continuar_coberturas()
+            return
 
         chk_todos = self.wait.until(EC.presence_of_element_located(self.CHK_TODAS_COBERTURAS))
         if not chk_todos.is_selected():
@@ -628,8 +636,11 @@ class CotizacionPage(BasePage):
         self._esperar_ventana_coberturas()
         deseadas = [c.strip().lower() for c in coberturas_deseadas]
 
+        time.sleep(1.5)  # Margen para que la tabla de coberturas termine de dibujarse
         nombres = [n for n, _ in self._coberturas_en_pantalla()]
         print(f"[QA Info] Coberturas disponibles: {nombres}")
+        assert nombres, ("Error de Datos: El portal no ofreció coberturas adicionales para este caso "
+                         "(solo Amparo básico), así que no se pueden seleccionar coberturas específicas.")
         faltantes = [d for d in deseadas if not any(d in n.lower() for n in nombres)]
         assert not faltantes, f"Error de Datos: No existen en pantalla las coberturas {faltantes}."
 
