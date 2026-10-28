@@ -58,6 +58,7 @@ class FinanciacionPage(BasePage):
 
         self.type_text(self.CAMPO_VALOR_CUOTA_INICIAL, valor)
         print(f"[QA Info] Valor de cuota inicial ingresado: {valor}")
+        self.mostrar(self.CAMPO_VALOR_CUOTA_INICIAL, segundos_demo=2)
 
     def calcular_financiacion(self):
         """Da clic en 'Cotizar financiación' de esta pantalla y espera la tabla de resultados."""
@@ -76,6 +77,8 @@ class FinanciacionPage(BasePage):
         Ejemplo: {'producto': 'Global Garantizada 360', 'prima': '142.596.000', ...,
                   'cuotas': ['8.370.225', '1.969.044', '1.671.987']}
         """
+        # La tabla aparece abajo; se lleva a la vista para que se vea el resultado
+        self.mostrar((By.ID, "tablaProductos"), segundos_demo=5)
         fila = self.driver.find_elements(*self.FILAS_RESULTADO)[0]
         celdas = [c.text.strip() for c in fila.find_elements(By.XPATH, "./th|./td")]
         resultado = dict(zip(self.COLUMNAS, celdas))

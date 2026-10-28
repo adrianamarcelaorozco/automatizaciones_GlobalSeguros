@@ -100,6 +100,7 @@ class CotizacionPage(BasePage):
         self.driver.execute_script("if(typeof CalcularEdadBen === 'function') CalcularEdadBen();")
         
         print("[QA Info] Beneficiario llenado con éxito y eventos sincronizados.")
+        self.mostrar((By.ID, "NomBen"), segundos_demo=3)
 
     def seleccionar_por_valor(self, select_id, valor_opcion):
         print(f"[QA Info] Forzando valor '{valor_opcion}' en el select '{select_id}'...")
@@ -203,7 +204,13 @@ class CotizacionPage(BasePage):
         time.sleep(0.5)
 
     def asegurar_seccion_beneficiario_visible(self):
-        self.driver.execute_script("window.scrollBy(0, 600)")
+        """Lleva a la vista la sección del beneficiario. El scroll del cotizador está en un
+        recuadro interno (no en la ventana), por eso se usa scrollIntoView sobre un campo."""
+        try:
+            campo = self.wait.until(EC.presence_of_element_located((By.ID, "NomBen")))
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", campo)
+        except TimeoutException:
+            self.driver.execute_script("window.scrollBy(0, 600)")
         time.sleep(1)
 
     def cambiar_a_ventana_cotizador(self):
@@ -598,6 +605,7 @@ class CotizacionPage(BasePage):
     def _clic_continuar_coberturas(self):
         """Da clic en 'Continuar' y espera a que se cierre la ventana de coberturas."""
         boton = WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located(self.BTN_CONTINUAR_COBERTURAS))
+        self.mostrar(boton, segundos_demo=3)
         self.driver.execute_script("arguments[0].click();", boton)
         print("[QA Info] Clic en 'Continuar'.")
         self.esperar_spinner()
