@@ -17,18 +17,37 @@ class BasePage:
 
     def mostrar(self, elemento_o_locator, segundos_demo=2):
         """Lleva el elemento a la vista (siempre). En modo demostración además lo
-        resalta con un borde naranja y pausa unos segundos para que se vea."""
-        elemento = elemento_o_locator
-        if isinstance(elemento_o_locator, tuple):
-            elemento = self.wait.until(EC.presence_of_element_located(elemento_o_locator))
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", elemento)
-        if MODO_DEMO:
-            self.driver.execute_script(
-                "arguments[0].style.outline='4px solid #F97316'; arguments[0].style.outlineOffset='4px';", elemento
-            )
-            time.sleep(segundos_demo)
-            self.driver.execute_script("arguments[0].style.outline='';", elemento)
-        return elemento
+        resalta con un borde naranja y pausa unos segundos para que se vea.
+
+        Es solo visual: si el portal recarga la página mientras tanto (PostBack) y el
+        elemento se renueva ('stale'), se ignora en vez de hacer fallar la prueba."""
+        from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+
+        es_locator = isinstance(elemento_o_locator, tuple)
+        if es_locator:
+            self.esperar_postback()  # que el portal termine de recargar antes de buscarlo
+
+        def obtener():
+            if es_locator:
+                return self.wait.until(EC.presence_of_element_located(elemento_o_locator))
+            return elemento_o_locator
+
+        try:
+            elemento = obtener()
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", elemento)
+            if MODO_DEMO:
+                self.driver.execute_script(
+                    "arguments[0].style.outline='4px solid #F97316'; arguments[0].style.outlineOffset='4px';",
+                    elemento,
+                )
+                time.sleep(segundos_demo)
+                self.driver.execute_script("arguments[0].style.outline='';", elemento)
+            return elemento
+        except (StaleElementReferenceException, TimeoutException):
+            # El elemento se renovó o no está: no afecta el resultado de la prueba
+            if MODO_DEMO:
+                time.sleep(segundos_demo)
+            return None
 
     def click(self, locator):
         """Espera a que el elemento sea clicleable y realiza el clic. 
