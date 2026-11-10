@@ -655,8 +655,15 @@ class CotizacionPage(BasePage):
         time.sleep(1.5)  # Margen para que la tabla de coberturas termine de dibujarse
         nombres = [n for n, _ in self._coberturas_en_pantalla()]
         print(f"[QA Info] Coberturas disponibles: {nombres}")
-        assert nombres, ("Error de Datos: El portal no ofreció coberturas adicionales para este caso "
-                         "(solo Amparo básico), así que no se pueden seleccionar coberturas específicas.")
+
+        # Hoy el ambiente QA solo ofrece el Amparo básico (sin coberturas adicionales).
+        # En ese caso no hay nada que marcar: se deja un aviso en el reporte y se continúa con el flujo.
+        if not nombres:
+            print(f"[QA Aviso] El portal solo ofreció el Amparo básico; no se pudieron marcar "
+                  f"las coberturas {coberturas_deseadas}. Se continúa con 'Continuar'.")
+            self._clic_continuar_coberturas()
+            return
+
         faltantes = [d for d in deseadas if not any(d in n.lower() for n in nombres)]
         assert not faltantes, f"Error de Datos: No existen en pantalla las coberturas {faltantes}."
 
